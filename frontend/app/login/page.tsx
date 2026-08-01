@@ -20,7 +20,7 @@ export default function LoginPage() {
 
     if (res.ok) {
       const data = await res.json();
-      localStorage.setItem('token', data.access_token);
+      localStorage.setItem('access_token', data.access_token);
       router.push('/dashboard'); 
     } else {
       setError('Invalid email or password');
