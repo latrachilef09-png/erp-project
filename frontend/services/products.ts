@@ -24,7 +24,10 @@ export const productsService = {
   page?: number;
   limit?: number;
   search?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
 }) => {
+
   const response = await api.get<Product[]>("/products", {
     params,
   });

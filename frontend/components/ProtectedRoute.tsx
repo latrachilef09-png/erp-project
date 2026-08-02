@@ -1,34 +1,29 @@
 "use client";
 
-import {useEffect} from "react";
-import {useRouter} from "next/navigation";
-
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ProtectedRoute({
-children
-}:{
-children:React.ReactNode
-}){
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const router = useRouter();
+  const [authorized, setAuthorized] = useState(false);
 
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
 
-const router=useRouter();
+    if (!token) {
+      router.push("/login");
+    } else {
+      setAuthorized(true);
+    }
+  }, [router]);
 
+  if (!authorized) {
+    return <p className="p-8">Loading...</p>;
+  }
 
-useEffect(()=>{
-
-const token=
-localStorage.getItem("token");
-
-
-if(!token){
- router.push("/login");
-}
-
-
-},[]);
-
-
-
-return children;
-
+  return <>{children}</>;
 }
