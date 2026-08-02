@@ -20,9 +20,9 @@ model Role {
 }
 
 model User {
-  id           Int      @id @default(autoincrement())
+  id           Int    @id @default(autoincrement())
   fullName     String
-  email        String   @unique
+  email        String @unique
   passwordHash String
 
   roleId Int
@@ -31,28 +31,33 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
 model ProductCategory {
-  id        Int       @id @default(autoincrement())
-  name      String    @unique
+  id   Int    @id @default(autoincrement())
+  name String @unique
 
-  products  Product[]
+  products Product[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
 model Product {
-  id          Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  reference   String   @unique
-  name        String
-  minStock    Int      @default(0)
+  reference String @unique
+  name      String
+  minStock  Int    @default(0)
 
-  categoryId  Int
-  category    ProductCategory @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  category   ProductCategory @relation(fields: [categoryId], references: [id])
+
+  stockMovements StockMovement[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
 enum WarehouseType {
   PRINCIPAL
   PRODUCTION
@@ -62,19 +67,20 @@ enum WarehouseType {
 }
 
 model Warehouse {
-  id          Int      @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   name        String
   type        WarehouseType
   description String?
 
-  locations   Location[]
+  locations      Location[]
+  stockMovements StockMovement[]
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Location {
-  id          Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   code        String
   name        String
@@ -83,8 +89,38 @@ model Location {
   warehouseId Int
   warehouse   Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
 
+  stockMovements StockMovement[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([warehouseId, code])
+}
+
+enum StockMovementType {
+  IN
+  OUT
+  TRANSFER
+  ADJUSTMENT
+}
+
+model StockMovement {
+  id Int @id @default(autoincrement())
+
+  type StockMovementType
+
+  quantity Int
+
+  reference String?
+
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+
+  warehouseId Int
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
+
+  locationId Int?
+  location   Location? @relation(fields: [locationId], references: [id])
+
+  createdAt DateTime @default(now())
 }

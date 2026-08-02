@@ -15,7 +15,13 @@ app.enableCors({
   credentials: true,
 });
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+  new ValidationPipe({
+    whitelist: true,
+    transform: true,
+    forbidNonWhitelisted: true,
+  }),
+);
   app.useGlobalFilters(
   new HttpExceptionFilter(),
   );
