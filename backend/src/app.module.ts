@@ -8,6 +8,8 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { ProductsModule } from './products/products.module';
 import { ProductCategoriesModule } from './product-categories/product-categories.module';
+import { WarehousesModule } from './warehouses/warehouses.module';
+import { LocationsModule } from './locations/locations.module';
 import * as Joi from 'joi';
 
 
@@ -30,6 +32,8 @@ import * as Joi from 'joi';
     UsersModule,
     ProductsModule,
     ProductCategoriesModule,
+    WarehousesModule,
+    LocationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
