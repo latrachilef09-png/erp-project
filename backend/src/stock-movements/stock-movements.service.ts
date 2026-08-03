@@ -1,6 +1,7 @@
 import {
   Injectable,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
@@ -78,8 +79,73 @@ export class StockMovementsService {
     }
 
 
-    return this.prisma.stockMovement.create({
-  data: createStockMovementDto,
+    return this.prisma.$transaction(async (tx) => {
+
+  const currentLevel =
+    await tx.stockLevel.findUnique({
+      where: {
+        productId_warehouseId: {
+          productId,
+          warehouseId,
+        },
+      },
+    });
+
+  let currentQuantity =
+    currentLevel?.quantity ?? 0;
+
+  let newQuantity = currentQuantity;
+
+  switch (createStockMovementDto.type) {
+
+    case 'IN':
+      newQuantity += createStockMovementDto.quantity;
+      break;
+
+    case 'OUT':
+      newQuantity -= createStockMovementDto.quantity;
+      break;
+
+    case 'ADJUSTMENT':
+      newQuantity = createStockMovementDto.quantity;
+      break;
+
+    case 'TRANSFER':
+      newQuantity -= createStockMovementDto.quantity;
+      break;
+  }
+
+  if (newQuantity < 0) {
+  throw new BadRequestException(
+    'Insufficient stock',
+  );
+}
+
+  await tx.stockLevel.upsert({
+
+    where: {
+      productId_warehouseId: {
+        productId,
+        warehouseId,
+      },
+    },
+
+    update: {
+      quantity: newQuantity,
+    },
+
+    create: {
+      productId,
+      warehouseId,
+      quantity: newQuantity,
+    },
+
+  });
+
+  return tx.stockMovement.create({
+    data: createStockMovementDto,
+  });
+
 });
   }
 
