@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-
+import { PrismaService } from './prisma/prisma.service';
 import { ValidationPipe } from '@nestjs/common';
-
+import { AuditInterceptor } from './common/interceptors/audit.interceptor';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
@@ -25,9 +25,12 @@ app.enableCors({
   app.useGlobalFilters(
   new HttpExceptionFilter(),
   );
-  app.useGlobalInterceptors(
+  const prisma = app.get(PrismaService);
+
+app.useGlobalInterceptors(
   new LoggingInterceptor(),
-  );
+  new AuditInterceptor(prisma),
+);
 
   const config = new DocumentBuilder()
     .setTitle('ERP API')

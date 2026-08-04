@@ -143,8 +143,11 @@ export class StockMovementsService {
   });
 
   return tx.stockMovement.create({
-    data: createStockMovementDto,
-  });
+  data: {
+    ...createStockMovementDto,
+    type: createStockMovementDto.type!,
+  },
+});
 
 });
   }

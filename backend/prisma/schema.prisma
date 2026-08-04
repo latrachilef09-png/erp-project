@@ -138,3 +138,15 @@ model StockLevel {
 
   @@unique([productId, warehouseId])
 }
+model AuditLog {
+  id         Int      @id @default(autoincrement())
+
+  action     String
+  entity      String
+  entityId    Int?
+
+  userId      Int?
+  userEmail   String?
+
+  createdAt  DateTime @default(now())
+}

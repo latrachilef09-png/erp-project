@@ -11,8 +11,9 @@ import { StockMovementType } from '@prisma/client';
 
 export class CreateStockMovementDto {
 
-  @IsEnum(StockMovementType)
-  type!: StockMovementType;
+  @IsOptional()
+@IsEnum(StockMovementType)
+type?: StockMovementType;
 
 
   @IsInt()

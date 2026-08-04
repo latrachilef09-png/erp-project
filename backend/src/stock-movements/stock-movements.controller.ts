@@ -40,6 +40,33 @@ export class StockMovementsController {
     );
 
   }
+  @Post('in')
+@Roles('ADMIN', 'STOCK_MANAGER')
+createIn(
+  @Body() dto: CreateStockMovementDto,
+) {
+
+  return this.stockMovementsService.create({
+    ...dto,
+    type: 'IN',
+  });
+
+}
+
+
+
+@Post('out')
+@Roles('ADMIN', 'STOCK_MANAGER')
+createOut(
+  @Body() dto: CreateStockMovementDto,
+) {
+
+  return this.stockMovementsService.create({
+    ...dto,
+    type: 'OUT',
+  });
+
+}
 
 
 
