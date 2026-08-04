@@ -12,7 +12,7 @@ export default function ProtectedRoute({
   const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
+    const token = localStorage.getItem("token");
 
     if (!token) {
       router.push("/login");

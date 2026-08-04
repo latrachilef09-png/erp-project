@@ -1,4 +1,4 @@
-// inside your e2e test setup
+
 it('should login with valid credentials', () => {
   return request(app.getHttpServer())
     .post('/auth/login')
