@@ -7,11 +7,11 @@ import {
 } from '@nestjs/common';
 
 import { ApiBearerAuth } from '@nestjs/swagger';
-
+import { CreateReturnDto } from './dto/create-return.dto';
 import { StockMovementsService } from './stock-movements.service';
 
 import { CreateStockMovementDto } from './dto/create-stock-movement.dto';
-
+import { CreateTransferDto } from './dto/create-transfer.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guards';
 import { Roles } from '../auth/decorators/roles.decorators';
@@ -76,6 +76,23 @@ findAll(
   @Query() query: QueryStockMovementDto,
 ) {
   return this.stockMovementsService.findAll(query);
+}
+
+@Post('transfer')
+@Roles('ADMIN', 'STOCK_MANAGER')
+transfer(
+  @Body() dto: CreateTransferDto,
+) {
+  return this.stockMovementsService.transfer(dto);
+}
+@Post('return')
+@Roles('ADMIN', 'STOCK_MANAGER')
+createReturn(
+  @Body() dto: CreateReturnDto,
+) {
+
+  return this.stockMovementsService.createReturn(dto);
+
 }
 
 }

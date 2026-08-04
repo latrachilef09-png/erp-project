@@ -101,7 +101,9 @@ enum StockMovementType {
   IN
   OUT
   TRANSFER
-  ADJUSTMENT
+  RETURN_CLIENT
+  RETURN_SUPPLIER
+  CORRECTION
 }
 
 model StockMovement {
@@ -121,7 +123,13 @@ model StockMovement {
 
   locationId Int?
   location   Location? @relation(fields: [locationId], references: [id])
+  relatedMovementId Int?
 
+relatedMovement StockMovement? @relation("TransferRelation", fields: [relatedMovementId], references: [id])
+
+linkedMovements StockMovement[] @relation("TransferRelation")
+
+reason String?
   createdAt DateTime @default(now())
 }
 

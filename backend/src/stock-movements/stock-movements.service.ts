@@ -4,8 +4,9 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 
+import { CreateTransferDto } from './dto/create-transfer.dto';
 import { PrismaService } from '../prisma/prisma.service';
-
+import { CreateReturnDto } from './dto/create-return.dto';
 import { CreateStockMovementDto } from './dto/create-stock-movement.dto';
 import { QueryStockMovementDto } from './dto/query-stock-movement.dto';
 
@@ -28,13 +29,11 @@ export class StockMovementsService {
     } = createStockMovementDto;
 
 
-    // Check product exists
     const product = await this.prisma.product.findUnique({
       where: {
         id: productId,
       },
     });
-
 
     if (!product) {
       throw new NotFoundException(
@@ -43,13 +42,11 @@ export class StockMovementsService {
     }
 
 
-    // Check warehouse exists
     const warehouse = await this.prisma.warehouse.findUnique({
       where: {
         id: warehouseId,
       },
     });
-
 
     if (!warehouse) {
       throw new NotFoundException(
@@ -58,8 +55,6 @@ export class StockMovementsService {
     }
 
 
-
-    // Check location belongs to warehouse
     if (locationId) {
 
       const location =
@@ -81,106 +76,342 @@ export class StockMovementsService {
 
     return this.prisma.$transaction(async (tx) => {
 
-  const currentLevel =
-    await tx.stockLevel.findUnique({
-      where: {
-        productId_warehouseId: {
+      const currentLevel =
+        await tx.stockLevel.findUnique({
+          where: {
+            productId_warehouseId: {
+              productId,
+              warehouseId,
+            },
+          },
+        });
+
+
+      let currentQuantity =
+        currentLevel?.quantity ?? 0;
+
+
+      let newQuantity = currentQuantity;
+
+
+      switch (createStockMovementDto.type) {
+
+        case 'IN':
+          newQuantity += createStockMovementDto.quantity;
+          break;
+
+
+        case 'OUT':
+          newQuantity -= createStockMovementDto.quantity;
+          break;
+
+
+        case 'CORRECTION':
+          newQuantity = createStockMovementDto.quantity;
+          break;
+
+
+        case 'TRANSFER':
+          newQuantity -= createStockMovementDto.quantity;
+          break;
+
+      }
+
+
+      if (newQuantity < 0) {
+        throw new BadRequestException(
+          'Insufficient stock',
+        );
+      }
+
+
+      await tx.stockLevel.upsert({
+
+        where: {
+          productId_warehouseId: {
+            productId,
+            warehouseId,
+          },
+        },
+
+        update: {
+          quantity: newQuantity,
+        },
+
+        create: {
           productId,
           warehouseId,
+          quantity: newQuantity,
         },
-      },
+
+      });
+
+
+      return tx.stockMovement.create({
+
+        data: {
+          ...createStockMovementDto,
+          type: createStockMovementDto.type!,
+        },
+
+      });
+
     });
 
-  let currentQuantity =
-    currentLevel?.quantity ?? 0;
-
-  let newQuantity = currentQuantity;
-
-  switch (createStockMovementDto.type) {
-
-    case 'IN':
-      newQuantity += createStockMovementDto.quantity;
-      break;
-
-    case 'OUT':
-      newQuantity -= createStockMovementDto.quantity;
-      break;
-
-    case 'ADJUSTMENT':
-      newQuantity = createStockMovementDto.quantity;
-      break;
-
-    case 'TRANSFER':
-      newQuantity -= createStockMovementDto.quantity;
-      break;
   }
 
-  if (newQuantity < 0) {
-  throw new BadRequestException(
-    'Insufficient stock',
-  );
-}
 
-  await tx.stockLevel.upsert({
 
-    where: {
-      productId_warehouseId: {
-        productId,
-        warehouseId,
-      },
-    },
+  async transfer(dto: CreateTransferDto) {
 
-    update: {
-      quantity: newQuantity,
-    },
+    return this.prisma.$transaction(async (tx) => {
 
-    create: {
-      productId,
-      warehouseId,
-      quantity: newQuantity,
-    },
+
+      const sourceLevel =
+        await tx.stockLevel.findUnique({
+
+          where: {
+            productId_warehouseId: {
+              productId: dto.productId,
+              warehouseId: dto.fromWarehouseId,
+            },
+          },
+
+        });
+
+
+      const sourceQuantity =
+        sourceLevel?.quantity ?? 0;
+
+
+      if (sourceQuantity < dto.quantity) {
+
+        throw new BadRequestException(
+          'Insufficient stock',
+        );
+
+      }
+
+
+
+      await tx.stockLevel.upsert({
+
+        where: {
+          productId_warehouseId: {
+            productId: dto.productId,
+            warehouseId: dto.fromWarehouseId,
+          },
+        },
+
+
+        update: {
+          quantity:
+            sourceQuantity - dto.quantity,
+        },
+
+
+        create: {
+
+          productId: dto.productId,
+
+          warehouseId: dto.fromWarehouseId,
+
+          quantity: 0,
+
+        },
+
+      });
+
+
+
+      const destinationLevel =
+        await tx.stockLevel.findUnique({
+
+          where: {
+            productId_warehouseId: {
+              productId: dto.productId,
+              warehouseId: dto.toWarehouseId,
+            },
+          },
+
+        });
+
+
+
+      await tx.stockLevel.upsert({
+
+        where: {
+          productId_warehouseId: {
+            productId: dto.productId,
+            warehouseId: dto.toWarehouseId,
+          },
+        },
+
+
+        update: {
+
+          quantity:
+            (destinationLevel?.quantity ?? 0)
+            + dto.quantity,
+
+        },
+
+
+        create: {
+
+          productId: dto.productId,
+
+          warehouseId: dto.toWarehouseId,
+
+          quantity: dto.quantity,
+
+        },
+
+      });
+
+
+
+      const outMovement =
+        await tx.stockMovement.create({
+
+          data: {
+
+            type: 'TRANSFER',
+
+            quantity: dto.quantity,
+
+            productId: dto.productId,
+
+            warehouseId: dto.fromWarehouseId,
+
+            reference: dto.reference,
+
+          },
+
+        });
+
+
+
+      const inMovement =
+        await tx.stockMovement.create({
+
+          data: {
+
+            type: 'TRANSFER',
+
+            quantity: dto.quantity,
+
+            productId: dto.productId,
+
+            warehouseId: dto.toWarehouseId,
+
+            reference: dto.reference,
+
+            relatedMovementId: outMovement.id,
+
+          },
+
+        });
+
+
+
+      await tx.stockMovement.update({
+
+        where: {
+          id: outMovement.id,
+        },
+
+
+        data: {
+
+          relatedMovementId: inMovement.id,
+
+        },
+
+      });
+
+
+
+      return {
+
+        outMovement,
+
+        inMovement,
+
+      };
+
+    });
+
+  }
+
+
+
+    async createReturn(dto: CreateReturnDto) {
+
+
+  const movementType =
+    dto.type === 'RETURN_CLIENT'
+      ? 'IN'
+      : 'OUT';
+
+
+  return this.create({
+
+    type: movementType,
+
+    quantity: dto.quantity,
+
+    productId: dto.productId,
+
+    warehouseId: dto.warehouseId,
+
+    reference: dto.reference,
 
   });
 
-  return tx.stockMovement.create({
-  data: {
-    ...createStockMovementDto,
-    type: createStockMovementDto.type!,
-  },
-});
-
-});
-  }
-
-
-
+}
 
   async findAll(query: QueryStockMovementDto) {
 
-  const {
-    productId,
-    warehouseId,
-    locationId,
-  } = query;
+    const {
+      productId,
+      warehouseId,
+      locationId,
+    } = query;
 
-  return this.prisma.stockMovement.findMany({
 
-    where: {
-      ...(productId && { productId }),
-      ...(warehouseId && { warehouseId }),
-      ...(locationId && { locationId }),
-    },
+    return this.prisma.stockMovement.findMany({
 
-    orderBy: {
-      createdAt: 'desc',
-    },
+      where: {
 
-    include: {
-      product: true,
-      warehouse: true,
-      location: true,
-    },
+        ...(productId && { productId }),
 
-  });
+        ...(warehouseId && { warehouseId }),
 
-}}
+        ...(locationId && { locationId }),
+
+      },
+
+
+      orderBy: {
+
+        createdAt: 'desc',
+
+      },
+
+
+      include: {
+
+        product: true,
+
+        warehouse: true,
+
+        location: true,
+
+      },
+
+    });
+
+  }
+
+}
