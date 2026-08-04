@@ -46,4 +46,27 @@ export class StockLevelsService {
       },
     });
   }
+  async findAll() {
+  return this.prisma.stockLevel.findMany({
+    include: {
+      product: true,
+      warehouse: true,
+    },
+    orderBy: {
+      quantity: 'desc',
+    },
+  });
+}
+async findLowStock() {
+  const levels = await this.prisma.stockLevel.findMany({
+    include: {
+      product: true,
+      warehouse: true,
+    },
+  });
+
+  return levels.filter(
+    (level) => level.quantity <= level.product.minStock,
+  );
+}
 }

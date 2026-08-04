@@ -3,11 +3,10 @@ import { PrismaClient, StockMovementType } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function rebuildStockLevels() {
-  console.log('Deleting existing stock levels...');
+  
 
   await prisma.stockLevel.deleteMany();
 
-  console.log('Reading stock movements...');
 
   const movements = await prisma.stockMovement.findMany({
     orderBy: {
@@ -55,7 +54,7 @@ async function rebuildStockLevels() {
     });
   }
 
-  console.log('Stock levels rebuilt successfully.');
+  
 
   await prisma.$disconnect();
 }

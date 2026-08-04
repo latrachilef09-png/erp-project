@@ -14,7 +14,6 @@ async function main() {
     skipDuplicates: true,
   });
 
-  console.log('Roles created.');
 
 
   // Seed warehouses
@@ -50,7 +49,6 @@ async function main() {
   });
 
 
-  console.log('Warehouses created.');
 
 }
 
