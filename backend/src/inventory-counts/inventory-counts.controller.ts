@@ -6,6 +6,7 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { UpdateCountLineDto } from './dto/update-count-line.dto';
 import { InventoryCountsService } from './inventory-counts.service';
 import { UseGuards } from '@nestjs/common';
@@ -16,6 +17,7 @@ import { Roles } from '../auth/decorators/roles.decorators';
 import { CreateInventoryCountDto } from './dto/create-inventory-count.dto';
 
 
+@ApiBearerAuth('access-token')
 @Controller('inventory-counts')
 @UseGuards(
   JwtAuthGuard,

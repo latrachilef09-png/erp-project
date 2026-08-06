@@ -1,41 +1,40 @@
-export default function Navbar(){
+"use client";
 
-const role=
-localStorage.getItem("role");
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
+export default function Navbar() {
+  const [role, setRole] = useState("");
 
-return (
+  useEffect(() => {
+    setRole(localStorage.getItem("role") || "");
+  }, []);
 
-<nav>
+  return (
+    <nav className="flex gap-6 p-4 border-b mb-6">
 
+      <Link href="/dashboard">
+        Dashboard
+      </Link>
 
-<a>
-Dashboard
-</a>
+      {role === "ADMIN" && (
+        <Link href="/users">
+          Users
+        </Link>
+      )}
 
+      {(role === "ADMIN" || role === "STOCK_MANAGER") && (
+        <Link href="/stock-movements">
+          Stock
+        </Link>
+      )}
 
-{
-role==="ADMIN" &&
-<a>
-Users
-</a>
-}
+      {(role === "ADMIN" || role === "STOCK_MANAGER") && (
+        <Link href="/inventory-counts">
+          Inventory Counts
+        </Link>
+      )}
 
-
-{
-role==="ADMIN" ||
-role==="STOCK_MANAGER"
-?
-<a>
-Stock
-</a>
-:null
-}
-
-
-
-</nav>
-
-)
-
+    </nav>
+  );
 }
