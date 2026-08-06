@@ -52,10 +52,12 @@ model Product {
   categoryId Int
   category   ProductCategory @relation(fields: [categoryId], references: [id])
 
-  stockMovements StockMovement[]
-  stockLevels    StockLevel[]
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  stockMovements      StockMovement[]
+  stockLevels         StockLevel[]
+  inventoryCountLines InventoryCountLine[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum WarehouseType {
@@ -72,11 +74,13 @@ model Warehouse {
   type        WarehouseType
   description String?
 
-  locations      Location[]
-  stockMovements StockMovement[]
-  stockLevels    StockLevel[]
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  locations       Location[]
+  stockMovements  StockMovement[]
+  stockLevels     StockLevel[]
+  inventoryCounts InventoryCount[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Location {
@@ -121,15 +125,15 @@ model StockMovement {
   warehouseId Int
   warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
 
-  locationId Int?
-  location   Location? @relation(fields: [locationId], references: [id])
+  locationId        Int?
+  location          Location? @relation(fields: [locationId], references: [id])
   relatedMovementId Int?
 
-relatedMovement StockMovement? @relation("TransferRelation", fields: [relatedMovementId], references: [id])
+  relatedMovement StockMovement? @relation("TransferRelation", fields: [relatedMovementId], references: [id])
 
-linkedMovements StockMovement[] @relation("TransferRelation")
+  linkedMovements StockMovement[] @relation("TransferRelation")
 
-reason String?
+  reason    String?
   createdAt DateTime @default(now())
 }
 
@@ -146,15 +150,43 @@ model StockLevel {
 
   @@unique([productId, warehouseId])
 }
+
 model AuditLog {
-  id         Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  action     String
-  entity      String
-  entityId    Int?
+  action   String
+  entity   String
+  entityId Int?
 
-  userId      Int?
-  userEmail   String?
+  userId    Int?
+  userEmail String?
 
-  createdAt  DateTime @default(now())
+  createdAt DateTime @default(now())
+}
+
+model InventoryCount {
+  id          Int       @id @default(autoincrement())
+  warehouseId Int
+  status      String    @default("DRAFT")
+  createdAt   DateTime  @default(now())
+  validatedAt DateTime?
+
+  warehouse Warehouse            @relation(fields: [warehouseId], references: [id])
+  lines     InventoryCountLine[]
+}
+
+model InventoryCountLine {
+  id Int @id @default(autoincrement())
+
+  inventoryCountId Int
+  productId        Int
+
+  systemQty   Int
+  countedQty  Int
+  discrepancy Int
+
+  justification String?
+
+  inventoryCount InventoryCount @relation(fields: [inventoryCountId], references: [id])
+  product        Product        @relation(fields: [productId], references: [id])
 }

@@ -12,6 +12,7 @@ import { WarehousesModule } from './warehouses/warehouses.module';
 import { LocationsModule } from './locations/locations.module';
 import { StockMovementsModule } from './stock-movements/stock-movements.module';
 import { StockLevelsModule } from './stock-levels/stock-levels.module';
+import { InventoryCountsModule } from './inventory-counts/inventory-counts.module';
 import * as Joi from 'joi';
 
 
@@ -38,6 +39,7 @@ import * as Joi from 'joi';
     LocationsModule,
     StockMovementsModule,
     StockLevelsModule,
+    InventoryCountsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
