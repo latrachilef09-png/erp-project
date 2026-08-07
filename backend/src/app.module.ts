@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-
+import { AuditLogsModule } from './audit-logs/audit-logs.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -40,6 +40,7 @@ import * as Joi from 'joi';
     StockMovementsModule,
     StockLevelsModule,
     InventoryCountsModule,
+    AuditLogsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
