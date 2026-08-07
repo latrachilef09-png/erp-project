@@ -9,7 +9,7 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+app.setGlobalPrefix('api/v1');
 app.enableCors({
   origin: 'http://localhost:3000',
   credentials: true,
@@ -51,6 +51,7 @@ app.useGlobalInterceptors(
   SwaggerModule.setup('api/docs', app, document);
 
   await app.listen(3001);
+  
 }
 
 bootstrap();
