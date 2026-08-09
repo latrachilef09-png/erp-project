@@ -6,7 +6,14 @@ import {
   IsPositive,
 } from 'class-validator';
 
-import { StockMovementType } from '@prisma/client';
+export enum StockMovementType {
+  IN = 'IN',
+  OUT = 'OUT',
+  TRANSFER = 'TRANSFER',
+  RETURN_CLIENT = 'RETURN_CLIENT',
+  RETURN_SUPPLIER = 'RETURN_SUPPLIER',
+  CORRECTION = 'CORRECTION',
+}
 
 
 export class CreateStockMovementDto {

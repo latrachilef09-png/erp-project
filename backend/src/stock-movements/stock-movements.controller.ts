@@ -9,8 +9,7 @@ import {
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { CreateReturnDto } from './dto/create-return.dto';
 import { StockMovementsService } from './stock-movements.service';
-
-import { CreateStockMovementDto } from './dto/create-stock-movement.dto';
+import { CreateStockMovementDto, StockMovementType } from './dto/create-stock-movement.dto';
 import { CreateTransferDto } from './dto/create-transfer.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guards';
@@ -48,7 +47,7 @@ createIn(
 
   return this.stockMovementsService.create({
     ...dto,
-    type: 'IN',
+    type: StockMovementType.IN,
   });
 
 }
@@ -63,7 +62,7 @@ createOut(
 
   return this.stockMovementsService.create({
     ...dto,
-    type: 'OUT',
+    type: StockMovementType.OUT,
   });
 
 }

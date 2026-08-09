@@ -10,22 +10,23 @@ import { CreateReturnDto } from './dto/create-return.dto';
 import { CreateStockMovementDto } from './dto/create-stock-movement.dto';
 import { QueryStockMovementDto } from './dto/query-stock-movement.dto';
 
+import { StockMovementType } from '@prisma/client';
+
 @Injectable()
 export class StockMovementsService {
-
   constructor(
     private prisma: PrismaService,
   ) {}
 
-
   async create(
     createStockMovementDto: CreateStockMovementDto,
   ) {
-
     const {
       productId,
       warehouseId,
       locationId,
+      quantity,
+      reference,
     } = createStockMovementDto;
 
 
@@ -56,7 +57,6 @@ export class StockMovementsService {
 
 
     if (locationId) {
-
       const location =
         await this.prisma.location.findFirst({
           where: {
@@ -64,7 +64,6 @@ export class StockMovementsService {
             warehouseId,
           },
         });
-
 
       if (!location) {
         throw new NotFoundException(
@@ -87,7 +86,7 @@ export class StockMovementsService {
         });
 
 
-      let currentQuantity =
+      const currentQuantity =
         currentLevel?.quantity ?? 0;
 
 
@@ -97,22 +96,22 @@ export class StockMovementsService {
       switch (createStockMovementDto.type) {
 
         case 'IN':
-          newQuantity += createStockMovementDto.quantity;
+          newQuantity += quantity;
           break;
 
 
         case 'OUT':
-          newQuantity -= createStockMovementDto.quantity;
+          newQuantity -= quantity;
           break;
 
 
         case 'CORRECTION':
-          newQuantity = createStockMovementDto.quantity;
+          newQuantity = quantity;
           break;
 
 
         case 'TRANSFER':
-          newQuantity -= createStockMovementDto.quantity;
+          newQuantity -= quantity;
           break;
 
       }
@@ -150,14 +149,25 @@ export class StockMovementsService {
       return tx.stockMovement.create({
 
         data: {
-          ...createStockMovementDto,
-          type: createStockMovementDto.type!,
+
+          type:
+            createStockMovementDto.type as StockMovementType,
+
+          quantity,
+
+          productId,
+
+          warehouseId,
+
+          locationId,
+
+          reference,
+
         },
 
       });
 
     });
-
   }
 
 
@@ -203,21 +213,15 @@ export class StockMovementsService {
           },
         },
 
-
         update: {
           quantity:
             sourceQuantity - dto.quantity,
         },
 
-
         create: {
-
           productId: dto.productId,
-
           warehouseId: dto.fromWarehouseId,
-
           quantity: 0,
-
         },
 
       });
@@ -247,7 +251,6 @@ export class StockMovementsService {
           },
         },
 
-
         update: {
 
           quantity:
@@ -255,7 +258,6 @@ export class StockMovementsService {
             + dto.quantity,
 
         },
-
 
         create: {
 
@@ -276,7 +278,7 @@ export class StockMovementsService {
 
           data: {
 
-            type: 'TRANSFER',
+            type: StockMovementType.TRANSFER,
 
             quantity: dto.quantity,
 
@@ -297,7 +299,7 @@ export class StockMovementsService {
 
           data: {
 
-            type: 'TRANSFER',
+            type: StockMovementType.TRANSFER,
 
             quantity: dto.quantity,
 
@@ -321,7 +323,6 @@ export class StockMovementsService {
           id: outMovement.id,
         },
 
-
         data: {
 
           relatedMovementId: inMovement.id,
@@ -333,11 +334,8 @@ export class StockMovementsService {
 
 
       return {
-
         outMovement,
-
         inMovement,
-
       };
 
     });
@@ -346,32 +344,35 @@ export class StockMovementsService {
 
 
 
-    async createReturn(dto: CreateReturnDto) {
+  async createReturn(dto: CreateReturnDto) {
+
+    const movementType =
+      dto.type === 'RETURN_CLIENT'
+        ? StockMovementType.IN
+        : StockMovementType.OUT;
 
 
-  const movementType =
-    dto.type === 'RETURN_CLIENT'
-      ? 'IN'
-      : 'OUT';
+    return this.create({
+
+      type: movementType as any,
+
+      quantity: dto.quantity,
+
+      productId: dto.productId,
+
+      warehouseId: dto.warehouseId,
+
+      reference: dto.reference,
+
+    });
+
+  }
 
 
-  return this.create({
 
-    type: movementType,
-
-    quantity: dto.quantity,
-
-    productId: dto.productId,
-
-    warehouseId: dto.warehouseId,
-
-    reference: dto.reference,
-
-  });
-
-}
-
-  async findAll(query: QueryStockMovementDto) {
+  async findAll(
+    query: QueryStockMovementDto,
+  ) {
 
     const {
       productId,
