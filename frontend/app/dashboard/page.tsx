@@ -1,1 +1,204 @@
-"use client"; import api from "@/lib/api"; import { useEffect, useState } from "react"; import ProtectedRoute from "@/components/ProtectedRoute"; interface Product { id: number; name: string; } interface Category { id: number; } interface Warehouse { id: number; } interface StockMovement { id: number; } interface StockLevel { id: number; quantity: number; product: Product; warehouse: Warehouse & { name: string; }; } interface LowStockItem { id: number; quantity: number; product: Product; warehouse: Warehouse & { name: string; }; } export default function Dashboard() { const [productsCount, setProductsCount] = useState(0); const [categoriesCount, setCategoriesCount] = useState(0); const [warehousesCount, setWarehousesCount] = useState(0); const [stockMovementsCount, setStockMovementsCount] = useState(0); const [stockLevels, setStockLevels] = useState<StockLevel[]>([]); const [lowStockItems, setLowStockItems] = useState<LowStockItem[]>([]); const [loading, setLoading] = useState(true); const [error, setError] = useState(""); useEffect(() => { const fetchDashboardData = async () => { try { setLoading(true); setError(""); const [ productsRes, categoriesRes, warehousesRes, stockMovementsRes, stockLevelsRes, lowStockRes, ] = await Promise.all([ api.get<Product[]>("/products"), api.get<Category[]>("/product-categories"), api.get<Warehouse[]>("/warehouses"), api.get<StockMovement[]>("/stock-movements"), api.get<StockLevel[]>("/stock-levels"), api.get<LowStockItem[]>("/stock-levels/low-stock"), ]); setProductsCount(productsRes.data.length); setCategoriesCount(categoriesRes.data.length); setWarehousesCount(warehousesRes.data.length); setStockMovementsCount(stockMovementsRes.data.length); setStockLevels(stockLevelsRes.data); setLowStockItems(lowStockRes.data); setLoading(false); } catch (err) { console.error("Dashboard error:", err); setError("Failed to load dashboard"); setLoading(false); } }; fetchDashboardData(); }, []); return ( <ProtectedRoute> {loading && ( <p className="text-gray-500"> Loading dashboard... </p> )} {error && ( <p className="text-red-500"> {error} </p> )} {!loading && !error && ( <> <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"> <div className="border rounded-lg p-6 shadow"> <h2 className="text-gray-500"> Products </h2> <p className="text-3xl font-bold"> {productsCount} </p> </div> <div className="border rounded-lg p-6 shadow"> <h2 className="text-gray-500"> Categories </h2> <p className="text-3xl font-bold"> {categoriesCount} </p> </div> <div className="border rounded-lg p-6 shadow"> <h2 className="text-gray-500"> Warehouses </h2> <p className="text-3xl font-bold"> {warehousesCount} </p> </div> <div className="border rounded-lg p-6 shadow"> <h2 className="text-gray-500"> Movements </h2> <p className="text-3xl font-bold"> {stockMovementsCount} </p> </div> </div> <div className="mt-8 border rounded-lg p-6 shadow"> <h2 className="text-xl font-bold mb-4"> Low Stock Alerts </h2> {lowStockItems.length === 0 ? ( <p className="text-green-600"> No low stock alerts 🎉 </p> ) : ( lowStockItems.map((item) => ( <div key={item.id} className="text-red-600 mb-2" > ⚠️ {item.product.name} in{" "} {item.warehouse.name}: {item.quantity} left </div> )) )} </div> <div className="mt-10"> <div className="flex justify-between items-center mb-4"> <h2 className="text-2xl font-bold"> Live Stock Levels </h2> <button onClick={() => window.open( `${process.env.NEXT_PUBLIC_API_BASE_URL}/stock-levels/export`, "_blank" ) } className="bg-green-600 text-white px-4 py-2 rounded" > Export Excel </button> </div> <table className="w-full border border-gray-300"> <thead className="bg-gray-100"> <tr> <th className="border p-2"> Product </th> <th className="border p-2"> Warehouse </th> <th className="border p-2"> Quantity </th> </tr> </thead> <tbody> {stockLevels.map((item) => ( <tr key={item.id}> <td className="border p-2"> {item.product.name} </td> <td className="border p-2"> {item.warehouse.name} </td> <td className="border p-2 font-bold"> {item.quantity} </td> </tr> ))} </tbody> </table> </div> </> )} </ProtectedRoute> ); }
+"use client";
+
+import Link from "next/link";
+import api from "@/lib/api";
+import { useEffect, useState } from "react";
+import ProtectedRoute from "@/components/ProtectedRoute";
+
+interface Product {
+id: number;
+name: string;
+}
+
+interface Category {
+id: number;
+}
+
+interface Warehouse {
+id: number;
+}
+
+interface StockMovement {
+id: number;
+}
+
+interface StockLevel {
+id: number;
+quantity: number;
+product: Product;
+warehouse: Warehouse & {
+name: string;
+};
+}
+
+interface LowStockItem {
+id: number;
+quantity: number;
+product: Product;
+warehouse: Warehouse & {
+name: string;
+};
+}
+
+export default function Dashboard() {
+const [productsCount, setProductsCount] = useState(0);
+const [categoriesCount, setCategoriesCount] = useState(0);
+const [warehousesCount, setWarehousesCount] = useState(0);
+const [stockMovementsCount, setStockMovementsCount] = useState(0);
+const [stockLevels, setStockLevels] = useState<StockLevel[]>([]);
+const [lowStockItems, setLowStockItems] = useState<LowStockItem[]>([]);
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState("");
+
+useEffect(() => {
+const fetchDashboardData = async () => {
+try {
+setLoading(true);
+setError("");
+
+    const [
+      productsRes,
+      categoriesRes,
+      warehousesRes,
+      stockMovementsRes,
+      stockLevelsRes,
+      lowStockRes,
+    ] = await Promise.all([
+      api.get<Product[]>("/products"),
+      api.get<Category[]>("/product-categories"),
+      api.get<Warehouse[]>("/warehouses"),
+      api.get<StockMovement[]>("/stock-movements"),
+      api.get<StockLevel[]>("/stock-levels"),
+      api.get<LowStockItem[]>("/stock-levels/low-stock"),
+    ]);
+
+    setProductsCount(productsRes.data.length);
+    setCategoriesCount(categoriesRes.data.length);
+    setWarehousesCount(warehousesRes.data.length);
+    setStockMovementsCount(stockMovementsRes.data.length);
+    setStockLevels(stockLevelsRes.data);
+    setLowStockItems(lowStockRes.data);
+    setLoading(false);
+  } catch (err) {
+    console.error("Dashboard error:", err);
+    setError("Failed to load dashboard");
+    setLoading(false);
+  }
+};
+
+fetchDashboardData();
+
+}, []);
+
+return (
+<ProtectedRoute>
+<div className="p-6">
+{loading && (
+<div>Loading dashboard...</div>
+)}
+
+    {error && (
+      <div>{error}</div>
+    )}
+
+    {!loading && !error && (
+      <>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <Link
+            href="/products"
+            className="block rounded-lg border p-4 hover:bg-gray-50 transition"
+          >
+            <h2 className="text-lg font-semibold">Products</h2>
+            <p className="text-2xl font-bold">{productsCount}</p>
+          </Link>
+
+          <div className="rounded-lg border p-4">
+            <h2 className="text-lg font-semibold">Categories</h2>
+            <p className="text-2xl font-bold">{categoriesCount}</p>
+          </div>
+
+          <Link
+            href="/warehouses"
+            className="block rounded-lg border p-4 hover:bg-gray-50 transition"
+          >
+            <h2 className="text-lg font-semibold">Warehouses</h2>
+            <p className="text-2xl font-bold">{warehousesCount}</p>
+          </Link>
+
+          <div className="rounded-lg border p-4">
+            <h2 className="text-lg font-semibold">Movements</h2>
+            <p className="text-2xl font-bold">{stockMovementsCount}</p>
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold mb-3">
+            Low Stock Alerts
+          </h2>
+
+          {lowStockItems.length === 0 ? (
+            <p>No low stock alerts 🎉</p>
+          ) : (
+            <div>
+              {lowStockItems.map((item) => (
+                <p key={item.id}>
+                  ⚠️ {item.product.name} in{" "}
+                  {item.warehouse.name}: {item.quantity} left
+                </p>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div>
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="text-xl font-semibold">
+              Live Stock Levels
+            </h2>
+
+            <button
+              onClick={() =>
+                window.open(
+                  `${process.env.NEXT_PUBLIC_API_BASE_URL}/stock-levels/export`,
+                  "_blank"
+                )
+              }
+              className="bg-green-600 text-white px-4 py-2 rounded"
+            >
+              Export Excel
+            </button>
+          </div>
+
+          <table className="w-full border-collapse">
+            <thead>
+              <tr>
+                <th className="border p-2 text-left">Product</th>
+                <th className="border p-2 text-left">Warehouse</th>
+                <th className="border p-2 text-left">Quantity</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {stockLevels.map((item) => (
+                <tr key={item.id}>
+                  <td className="border p-2">
+                    {item.product.name}
+                  </td>
+                  <td className="border p-2">
+                    {item.warehouse.name}
+                  </td>
+                  <td className="border p-2">
+                    {item.quantity}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </>
+    )}
+  </div>
+</ProtectedRoute>
+
+);
+}
