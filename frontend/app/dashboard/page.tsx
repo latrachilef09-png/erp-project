@@ -112,10 +112,13 @@ return (
             <p className="text-2xl font-bold">{productsCount}</p>
           </Link>
 
-          <div className="rounded-lg border p-4">
-            <h2 className="text-lg font-semibold">Categories</h2>
-            <p className="text-2xl font-bold">{categoriesCount}</p>
-          </div>
+          <Link
+  href="/stock-movements"
+  className="block rounded-lg border p-4 hover:bg-gray-50 transition"
+>
+  <h2 className="text-lg font-semibold">Movements</h2>
+  <p className="text-2xl font-bold">{stockMovementsCount}</p>
+</Link>
 
           <Link
             href="/warehouses"
