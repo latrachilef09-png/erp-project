@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
-
+import { QueryProductDto } from './dto/query-product.dto';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 
@@ -51,22 +51,52 @@ export class ProductsService {
 
 
 
-  async findAll() {
+  async findAll(query: QueryProductDto) {
+  const { page = 1, limit = 10, search } = query;
 
-    return this.prisma.product.findMany({
+  const where = search
+    ? {
+        OR: [
+          {
+            reference: {
+              contains: search,
+              mode: 'insensitive' as const,
+            },
+          },
+          {
+            name: {
+              contains: search,
+              mode: 'insensitive' as const,
+            },
+          },
+        ],
+      }
+    : {};
 
+  const [data, total] = await this.prisma.$transaction([
+    this.prisma.product.findMany({
+      where,
       include: {
         category: true,
       },
-
       orderBy: {
         id: 'asc',
       },
+      skip: (page - 1) * limit,
+      take: limit,
+    }),
 
-    });
+    this.prisma.product.count({ where }),
+  ]);
 
-  }
-
+  return {
+    data,
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit),
+  };
+}
 
 
   async findOne(id: number) {

@@ -24,26 +24,24 @@ export class AuditInterceptor implements NestInterceptor {
     const request = context.switchToHttp().getRequest();
 
     return next.handle().pipe(
+  tap(async (result) => {
+    if (['GET', 'HEAD', 'OPTIONS'].includes(request.method)) {
+      return;
+    }
 
-      tap(async (result) => {
+    const user = request.user;
 
-        const user = request.user;
-
-        await this.prisma.auditLog.create({
-
-          data: {
-            action: request.method,
-            entity: request.route.path,
-            entityId: result?.id,
-            userId: user?.userId ? Number(user.userId) : null,
-            userEmail: user?.email,
-          },
-
-        });
-
-      }),
-
-    );
+    await this.prisma.auditLog.create({
+      data: {
+        action: request.method,
+        entity: request.route.path,
+        entityId: result?.id,
+        userId: user?.userId ? Number(user.userId) : null,
+        userEmail: user?.email,
+      },
+    });
+  }),
+);
 
   }
 

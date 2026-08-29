@@ -21,13 +21,15 @@ import { Roles } from '../auth/decorators/roles.decorators';
 
 @ApiBearerAuth('access-token')
 @Controller('product-categories')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('ADMIN', 'STOCK_MANAGER', 'VIEWER')
 export class ProductCategoriesController {
   constructor(
     private readonly productCategoriesService: ProductCategoriesService,
   ) {}
 
   @Post()
+  @Roles('ADMIN', 'STOCK_MANAGER')
   create(@Body() dto: CreateProductCategoryDto) {
     return this.productCategoriesService.create(dto);
   }
@@ -43,6 +45,7 @@ export class ProductCategoriesController {
   }
 
   @Patch(':id')
+  @Roles('ADMIN', 'STOCK_MANAGER')
   update(
     @Param('id') id: string,
     @Body() dto: UpdateProductCategoryDto,
@@ -51,6 +54,7 @@ export class ProductCategoriesController {
   }
 
   @Delete(':id')
+@Roles('ADMIN')
   remove(@Param('id') id: string) {
     return this.productCategoriesService.remove(Number(id));
   }
