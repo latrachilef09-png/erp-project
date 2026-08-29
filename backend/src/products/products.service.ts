@@ -52,7 +52,13 @@ export class ProductsService {
 
 
   async findAll(query: QueryProductDto) {
-  const { page = 1, limit = 10, search } = query;
+  const {
+    page = 1,
+    limit = 10,
+    search,
+    sortBy = 'name',
+    sortOrder = 'asc',
+  } = query;
 
   const where = search
     ? {
@@ -80,7 +86,7 @@ export class ProductsService {
         category: true,
       },
       orderBy: {
-        id: 'asc',
+        [sortBy]: sortOrder,
       },
       skip: (page - 1) * limit,
       take: limit,
