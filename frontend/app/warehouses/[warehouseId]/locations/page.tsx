@@ -63,7 +63,7 @@ export default function LocationsPage() {
       ) : (
         <table className="border w-full">
           <thead>
-            <tr className="bg-gray-100">
+            <tr className="bg-gray-100 text-gray-900">
               <th className="border p-3 text-left">ID</th>
               <th className="border p-3 text-left">Code</th>
               <th className="border p-3 text-left">Name</th>

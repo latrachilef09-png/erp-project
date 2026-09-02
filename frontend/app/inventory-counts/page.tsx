@@ -16,14 +16,19 @@ interface InventoryCount {
 export default function InventoryCountsPage() {
   const [counts, setCounts] = useState<InventoryCount[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     async function loadCounts() {
       try {
+        setLoading(true);
+        setError(false);
+
         const data = await getInventoryCounts();
         setCounts(data as InventoryCount[]);
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        console.error("Failed to load inventory counts:", err);
+        setError(true);
       } finally {
         setLoading(false);
       }
@@ -33,40 +38,78 @@ export default function InventoryCountsPage() {
   }, []);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="p-8">
+        <p className="text-gray-500">Loading inventory counts...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-8">
+        <h1 className="text-3xl font-bold mb-4">Inventory Counts</h1>
+        <p className="text-red-500">
+          Failed to load inventory counts.
+        </p>
+      </div>
+    );
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">
-        Inventory Counts
-      </h1>
+    <div className="p-8">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Inventory Counts</h1>
+
+        <Link
+          href="/inventory-counts/create"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Create Count
+        </Link>
+      </div>
 
       {counts.length === 0 ? (
-        <p>No inventory counts found.</p>
+        <div className="border rounded-lg p-6 text-gray-500">
+          No inventory counts found.
+        </div>
       ) : (
-        <div className="space-y-3">
-          {counts.map((count) => (
-            <div
-              key={count.id}
-              className="border rounded p-4"
-            >
-              <p>ID: {count.id}</p>
-
-              <p>Status: {count.status}</p>
-
-              <p>
-                Warehouse: {count.warehouse?.name ?? "-"}
-              </p>
-
-              <Link
-                href={`/inventory-counts/${count.id}`}
-                className="text-blue-600"
-              >
-                Open
-              </Link>
-            </div>
-          ))}
+        <div className="overflow-x-auto">
+          <table className="border-collapse border w-full">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="border p-3 text-left text-gray-800">ID</th>
+                <th className="border p-3 text-left text-gray-800">
+                  Warehouse
+                </th>
+                <th className="border p-3 text-left text-gray-800">
+                  Status
+                </th>
+                <th className="border p-3 text-left text-gray-800">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {counts.map((count) => (
+                <tr key={count.id}>
+                  <td className="border p-3">{count.id}</td>
+                  <td className="border p-3">
+                    {count.warehouse?.name ?? "-"}
+                  </td>
+                  <td className="border p-3">{count.status}</td>
+                  <td className="border p-3">
+                    <Link
+                      href={`/inventory-counts/${count.id}`}
+                      className="text-blue-600 hover:underline"
+                    >
+                      Open
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>

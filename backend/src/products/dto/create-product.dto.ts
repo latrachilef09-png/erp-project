@@ -18,5 +18,6 @@ export class CreateProductDto {
 
 
   @IsInt()
+  @Min(1)
   categoryId!: number;
 }

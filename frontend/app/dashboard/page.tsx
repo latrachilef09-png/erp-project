@@ -4,7 +4,7 @@ import Link from "next/link";
 import api from "@/lib/api";
 import { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
-
+import Navbar from "@/components/Navbar";
 interface Product {
   id: number;
   name: string;
@@ -151,6 +151,7 @@ export default function Dashboard() {
 
   return (
     <ProtectedRoute>
+      <Navbar />
       <div className="p-6">
         {loading && <div>Loading dashboard...</div>}
 
@@ -181,17 +182,12 @@ export default function Dashboard() {
 
               {/* Categories */}
               <Link
-                href="/product-categories"
-                className="block rounded-lg border p-4 hover:bg-gray-50 transition"
-              >
-                <h2 className="text-lg font-semibold">
-                  Categories
-                </h2>
-
-                <p className="text-2xl font-bold">
-                  {categoriesCount}
-                </p>
-              </Link>
+  href="/categories"
+  className="block rounded-lg border p-4 hover:bg-gray-50 transition"
+>
+  <h2 className="text-lg font-semibold">Categories</h2>
+  <p className="text-2xl font-bold">{categoriesCount}</p>
+</Link>
 
               {/* Warehouses */}
               <Link
