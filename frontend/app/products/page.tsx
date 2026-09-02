@@ -83,6 +83,7 @@ export default function ProductsPage() {
             <th className="border p-3 text-left">Reference</th>
             <th className="border p-3 text-left">Name</th>
             <th className="border p-3 text-left">Min Stock</th>
+            <th className="border p-3 text-left">Actions</th>
           </tr>
         </thead>
 
@@ -90,7 +91,7 @@ export default function ProductsPage() {
           {products.length === 0 ? (
             <tr>
               <td
-                colSpan={3}
+                colSpan={4}
                 className="border p-5 text-center text-gray-500"
               >
                 No products found
@@ -102,6 +103,29 @@ export default function ProductsPage() {
                 <td className="border p-3">{product.reference}</td>
                 <td className="border p-3">{product.name}</td>
                 <td className="border p-3">{product.minStock}</td>
+
+                <td className="border p-3">
+                  <button
+                    className="rounded bg-red-600 px-3 py-1 text-white hover:bg-red-700"
+                    onClick={async () => {
+                      const confirmed = window.confirm(
+                        `Are you sure you want to delete "${product.name}"?`
+                      );
+
+                      if (!confirmed) return;
+
+                      try {
+                        await productsService.remove(product.id);
+                        window.location.reload();
+                      } catch (error) {
+                        console.error("Delete product error:", error);
+                        alert("Failed to delete product.");
+                      }
+                    }}
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))
           )}
