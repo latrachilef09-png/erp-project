@@ -4,132 +4,226 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/lib/api";
 
-function WarehouseIcon({ className = "h-8 w-8" }: { className?: string }) {
+function WarehouseScene() {
   return (
-    <svg
-      viewBox="0 0 48 48"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      aria-hidden="true"
-    >
-      <path
-        d="M6 20L24 8L42 20V40H6V20Z"
-        stroke="currentColor"
-        strokeWidth="2.5"
-        strokeLinejoin="round"
-      />
+    <div className="relative h-full min-h-[520px] w-full overflow-hidden rounded-3xl border border-zinc-800 bg-[#080808]">
+      {/* Background glow */}
+      <div className="absolute left-1/4 top-1/4 h-72 w-72 rounded-full bg-emerald-500/5 blur-3xl" />
 
-      <path
-        d="M4 20H44"
-        stroke="currentColor"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-      />
+      {/* Grid */}
+      <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(#52525b_1px,transparent_1px),linear-gradient(90deg,#52525b_1px,transparent_1px)] [background-size:48px_48px]" />
 
-      <path
-        d="M13 25H20V32H13V25Z"
-        stroke="currentColor"
-        strokeWidth="2"
-      />
+      {/* Header */}
+      <div className="absolute left-8 right-8 top-8 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-zinc-700 bg-zinc-900">
+            <svg
+              viewBox="0 0 48 48"
+              className="h-7 w-7 text-white"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M6 20L24 8L42 20V40H6V20Z"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M4 20H44M13 25H20V32H13V25ZM28 25H35V32H28V25Z"
+                stroke="currentColor"
+                strokeWidth="2"
+              />
+              <path
+                d="M20 40V32H28V40"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              />
+            </svg>
+          </div>
 
-      <path
-        d="M28 25H35V32H28V25Z"
-        stroke="currentColor"
-        strokeWidth="2"
-      />
+          <div>
+            <p className="text-sm font-semibold text-white">StockFlow</p>
+            <p className="text-[10px] uppercase tracking-[0.25em] text-zinc-600">
+              Warehouse ERP
+            </p>
+          </div>
+        </div>
 
-      <path
-        d="M20 40V32H28V40"
-        stroke="currentColor"
-        strokeWidth="2.5"
-        strokeLinejoin="round"
-      />
+        <div className="rounded-full border border-emerald-900/60 bg-emerald-950/30 px-3 py-1.5 text-[10px] uppercase tracking-widest text-emerald-500">
+          System online
+        </div>
+      </div>
 
-      <path
-        d="M24 8V3"
-        stroke="currentColor"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
+      {/* Main illustration */}
+      <svg
+        viewBox="0 0 700 560"
+        className="absolute inset-x-0 bottom-8 h-[72%] w-full"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-label="Illustration of warehouse shelves, packages, and inventory tracking"
+      >
+        {/* Floor */}
+        <path
+          d="M40 465L350 350L660 465L350 550L40 465Z"
+          fill="#111111"
+          stroke="#27272A"
+          strokeWidth="2"
+        />
 
-function PackageIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-5 w-5"
-      aria-hidden="true"
-    >
-      <path
-        d="M3 7L12 3L21 7V17L12 21L3 17V7Z"
-        stroke="currentColor"
-        strokeWidth="1.7"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M3 7L12 12L21 7M12 12V21"
-        stroke="currentColor"
-        strokeWidth="1.7"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
+        {/* Perspective floor lines */}
+        <path d="M350 350V550" stroke="#27272A" strokeWidth="2" />
+        <path d="M40 465L350 465L660 465" stroke="#27272A" />
+        <path d="M180 412L350 550M520 412L350 550" stroke="#27272A" />
 
-function WarehouseSmallIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-5 w-5"
-      aria-hidden="true"
-    >
-      <path
-        d="M3 10L12 4L21 10V20H3V10Z"
-        stroke="currentColor"
-        strokeWidth="1.7"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M2 10H22M8 14H10V17H8V14ZM14 14H16V17H14V14Z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
+        {/* Left storage rack */}
+        <g stroke="#52525B" strokeWidth="5" strokeLinecap="round">
+          <path d="M95 145V455" />
+          <path d="M270 145V455" />
+          <path d="M95 145H270" />
+          <path d="M95 245H270" />
+          <path d="M95 345H270" />
+          <path d="M95 445H270" />
+        </g>
 
-function MovementIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-5 w-5"
-      aria-hidden="true"
-    >
-      <path
-        d="M4 17L9 12L13 16L20 8"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M15 8H20V13"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
+        {/* Left rack boxes */}
+        <g stroke="#71717A" strokeWidth="2">
+          <path d="M115 170H165V220H115V170Z" fill="#27272A" />
+          <path d="M175 170H245V220H175V170Z" fill="#18181B" />
+          <path d="M115 270H190V320H115V270Z" fill="#18181B" />
+          <path d="M200 270H250V320H200V270Z" fill="#27272A" />
+          <path d="M115 370H155V420H115V370Z" fill="#27272A" />
+          <path d="M165 370H245V420H165V370Z" fill="#18181B" />
+        </g>
+
+        {/* Right storage rack */}
+        <g stroke="#52525B" strokeWidth="5" strokeLinecap="round">
+          <path d="M430 145V455" />
+          <path d="M605 145V455" />
+          <path d="M430 145H605" />
+          <path d="M430 245H605" />
+          <path d="M430 345H605" />
+          <path d="M430 445H605" />
+        </g>
+
+        {/* Right rack boxes */}
+        <g stroke="#71717A" strokeWidth="2">
+          <path d="M450 170H500V220H450V170Z" fill="#27272A" />
+          <path d="M510 170H580V220H510V170Z" fill="#18181B" />
+          <path d="M450 270H525V320H450V270Z" fill="#18181B" />
+          <path d="M535 270H585V320H535V270Z" fill="#27272A" />
+          <path d="M450 370H490V420H450V370Z" fill="#27272A" />
+          <path d="M500 370H580V420H500V370Z" fill="#18181B" />
+        </g>
+
+        {/* Central package */}
+        <g>
+          <path
+            d="M285 290L350 255L415 290L350 327L285 290Z"
+            fill="#3F3F46"
+            stroke="#A1A1AA"
+            strokeWidth="2"
+          />
+          <path
+            d="M285 290V370L350 410V327L285 290Z"
+            fill="#27272A"
+            stroke="#71717A"
+            strokeWidth="2"
+          />
+          <path
+            d="M350 327L415 290V370L350 410V327Z"
+            fill="#18181B"
+            stroke="#71717A"
+            strokeWidth="2"
+          />
+          <path
+            d="M350 255V327M320 272L385 309"
+            stroke="#D4D4D8"
+            strokeWidth="2"
+          />
+
+          {/* Barcode */}
+          <g stroke="#E4E4E7" strokeWidth="2">
+            <path d="M325 348V378M331 351V382M337 354V386M343 357V389M349 360V392" />
+          </g>
+        </g>
+
+        {/* Scanning line */}
+        <path
+          d="M120 230H580"
+          stroke="#10B981"
+          strokeWidth="1.5"
+          strokeDasharray="6 8"
+          opacity="0.7"
+        />
+
+        {/* Floating labels */}
+        <g>
+          <rect
+            x="110"
+            y="92"
+            width="118"
+            height="38"
+            rx="8"
+            fill="#18181B"
+            stroke="#3F3F46"
+          />
+          <circle cx="126" cy="111" r="4" fill="#10B981" />
+          <text
+            x="138"
+            y="115"
+            fill="#D4D4D8"
+            fontSize="11"
+            fontFamily="Arial, sans-serif"
+          >
+            STORAGE A
+          </text>
+        </g>
+
+        <g>
+          <rect
+            x="472"
+            y="92"
+            width="118"
+            height="38"
+            rx="8"
+            fill="#18181B"
+            stroke="#3F3F46"
+          />
+          <circle cx="488" cy="111" r="4" fill="#10B981" />
+          <text
+            x="500"
+            y="115"
+            fill="#D4D4D8"
+            fontSize="11"
+            fontFamily="Arial, sans-serif"
+          >
+            STORAGE B
+          </text>
+        </g>
+      </svg>
+
+      {/* Bottom information */}
+      <div className="absolute bottom-8 left-8 right-8 flex items-end justify-between gap-6">
+        <div>
+          <p className="text-xs uppercase tracking-[0.25em] text-zinc-600">
+            Inventory control
+          </p>
+
+          <p className="mt-2 max-w-xs text-sm leading-6 text-zinc-400">
+            Track products, monitor stock levels, and manage warehouse
+            operations from one workspace.
+          </p>
+        </div>
+
+        <div className="hidden text-right sm:block">
+          <p className="text-3xl font-semibold text-zinc-300">01</p>
+          <p className="mt-1 text-[10px] uppercase tracking-widest text-zinc-600">
+            Stock module
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -170,133 +264,65 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="relative flex min-h-screen overflow-hidden bg-black text-white">
-      {/* Background decoration */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-zinc-800/30 blur-3xl" />
+    <main className="min-h-screen bg-black px-4 py-4 text-white sm:px-6 lg:px-8">
+      <div className="mx-auto grid min-h-[calc(100vh-2rem)] max-w-7xl gap-4 lg:grid-cols-[1.35fr_0.85fr]">
+        {/* Warehouse visual */}
+        <section className="hidden lg:block">
+          <WarehouseScene />
+        </section>
 
-        <div className="absolute -bottom-40 -right-40 h-[32rem] w-[32rem] rounded-full bg-zinc-800/20 blur-3xl" />
-
-        <div className="absolute inset-0 opacity-30 [background-image:linear-gradient(#27272a_1px,transparent_1px),linear-gradient(90deg,#27272a_1px,transparent_1px)] [background-size:64px_64px]" />
-
-        {/* Warehouse shelves */}
-        <div className="absolute bottom-0 left-0 right-0 h-1/2 opacity-40">
-          <div className="absolute bottom-0 left-[8%] h-64 w-2 bg-zinc-700" />
-          <div className="absolute bottom-0 left-[8%] h-2 w-[34rem] bg-zinc-700" />
-          <div className="absolute bottom-32 left-[8%] h-2 w-[34rem] bg-zinc-700" />
-          <div className="absolute bottom-64 left-[8%] h-2 w-[34rem] bg-zinc-700" />
-
-          {/* Storage boxes */}
-          <div className="absolute bottom-2 left-[14%] h-20 w-24 border border-zinc-700 bg-zinc-900" />
-          <div className="absolute bottom-2 left-[28%] h-28 w-28 border border-zinc-700 bg-zinc-900" />
-          <div className="absolute bottom-2 left-[43%] h-16 w-20 border border-zinc-700 bg-zinc-900" />
-
-          <div className="absolute bottom-0 right-[10%] h-80 w-2 bg-zinc-800" />
-          <div className="absolute bottom-0 right-[10%] h-2 w-80 bg-zinc-800" />
-          <div className="absolute bottom-40 right-[10%] h-2 w-80 bg-zinc-800" />
-          <div className="absolute bottom-80 right-[10%] h-2 w-80 bg-zinc-800" />
-        </div>
-      </div>
-
-      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col lg:flex-row">
-        {/* Left branding section */}
-        <section className="hidden flex-1 flex-col justify-center px-12 lg:flex">
-          <div className="max-w-lg">
-            <div className="mb-6 flex items-center gap-3">
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-zinc-700 bg-zinc-900 text-white">
-                <WarehouseIcon />
+        {/* Login panel */}
+        <section className="flex items-center justify-center">
+          <div className="w-full max-w-md">
+            {/* Mobile logo */}
+            <div className="mb-8 flex items-center gap-3 lg:hidden">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-zinc-700 bg-zinc-900">
+                <svg
+                  viewBox="0 0 48 48"
+                  className="h-7 w-7"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M6 20L24 8L42 20V40H6V20Z"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                  />
+                  <path
+                    d="M4 20H44M13 25H20V32H13V25ZM28 25H35V32H28V25Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
+                </svg>
               </div>
 
               <div>
-                <p className="text-lg font-semibold tracking-tight">
-                  StockFlow
-                </p>
-
-                <p className="text-xs uppercase tracking-[0.25em] text-zinc-500">
-                  ERP Management
+                <p className="font-semibold">StockFlow</p>
+                <p className="text-xs text-zinc-500">
+                  ERP Stock & Warehouse Management
                 </p>
               </div>
             </div>
 
-            <h1 className="text-5xl font-semibold leading-tight tracking-tight">
-              Manage your stock.
-              <br />
-              <span className="text-zinc-500">
-                Move your business forward.
-              </span>
-            </h1>
-
-            <p className="mt-6 max-w-md text-sm leading-6 text-zinc-400">
-              A centralized workspace for products, warehouses, inventory
-              movements, and stock monitoring.
-            </p>
-
-            <div className="mt-10 grid max-w-md grid-cols-3 gap-3">
-              <div className="rounded-xl border border-zinc-800 bg-zinc-950/80 p-4">
-                <div className="mb-3 text-zinc-500">
-                  <PackageIcon />
-                </div>
-
-                <p className="text-sm font-medium">Products</p>
-                <p className="mt-1 text-xs text-zinc-600">Organized</p>
-              </div>
-
-              <div className="rounded-xl border border-zinc-800 bg-zinc-950/80 p-4">
-                <div className="mb-3 text-zinc-500">
-                  <WarehouseSmallIcon />
-                </div>
-
-                <p className="text-sm font-medium">Warehouses</p>
-                <p className="mt-1 text-xs text-zinc-600">Centralized</p>
-              </div>
-
-              <div className="rounded-xl border border-zinc-800 bg-zinc-950/80 p-4">
-                <div className="mb-3 text-zinc-500">
-                  <MovementIcon />
-                </div>
-
-                <p className="text-sm font-medium">Movements</p>
-                <p className="mt-1 text-xs text-zinc-600">Tracked</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Login section */}
-        <section className="flex w-full items-center justify-center px-6 py-10 lg:w-[460px] lg:px-10">
-          <div className="w-full max-w-md">
-            {/* Mobile branding */}
-            <div className="mb-8 lg:hidden">
-              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl border border-zinc-700 bg-zinc-900">
-                <WarehouseIcon />
-              </div>
-
-              <p className="text-lg font-semibold">StockFlow</p>
-
-              <p className="mt-1 text-sm text-zinc-500">
-                ERP Stock & Warehouse Management
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-950/95 p-8 shadow-2xl backdrop-blur">
-              <div className="mb-7">
-                <p className="mb-2 text-xs font-medium uppercase tracking-[0.2em] text-zinc-500">
+            <div className="rounded-3xl border border-zinc-800 bg-zinc-950 p-7 shadow-2xl sm:p-9">
+              <div className="mb-8">
+                <p className="mb-3 text-xs font-medium uppercase tracking-[0.25em] text-zinc-500">
                   Secure access
                 </p>
 
-                <h2 className="text-2xl font-semibold tracking-tight">
+                <h1 className="text-3xl font-semibold tracking-tight">
                   Welcome back
-                </h2>
+                </h1>
 
-                <p className="mt-2 text-sm text-zinc-500">
-                  Sign in to access your stock workspace.
+                <p className="mt-3 text-sm leading-6 text-zinc-500">
+                  Sign in to continue managing your inventory.
                 </p>
               </div>
 
               {error && (
                 <div
                   role="alert"
-                  className="mb-5 rounded-lg border border-red-900/60 bg-red-950/30 px-4 py-3 text-sm text-red-400"
+                  className="mb-5 rounded-xl border border-red-900/60 bg-red-950/30 px-4 py-3 text-sm text-red-400"
                 >
                   {error}
                 </div>
@@ -314,10 +340,10 @@ export default function LoginPage() {
                   <input
                     id="email"
                     type="email"
-                    placeholder="admin@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full rounded-lg border border-zinc-700 bg-black px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-white"
+                    placeholder="admin@example.com"
+                    className="w-full rounded-xl border border-zinc-700 bg-black px-4 py-3.5 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-zinc-300"
                     required
                   />
                 </div>
@@ -334,17 +360,17 @@ export default function LoginPage() {
                     <input
                       id="password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="Enter your password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full rounded-lg border border-zinc-700 bg-black px-4 py-3 pr-20 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-white"
+                      placeholder="Enter your password"
+                      className="w-full rounded-xl border border-zinc-700 bg-black px-4 py-3.5 pr-20 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-zinc-300"
                       required
                     />
 
                     <button
                       type="button"
                       onClick={() => setShowPassword((value) => !value)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-500 transition hover:text-white"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-zinc-500 transition hover:text-white"
                     >
                       {showPassword ? "Hide" : "Show"}
                     </button>
@@ -354,20 +380,20 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full rounded-lg bg-white py-3 text-sm font-semibold text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="w-full rounded-xl bg-white py-3.5 text-sm font-semibold text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {loading ? "Signing in..." : "Sign in"}
                 </button>
               </form>
 
-              <div className="mt-7 flex items-center justify-center gap-2 text-xs text-zinc-600">
+              <div className="mt-8 flex items-center justify-center gap-2 text-xs text-zinc-600">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                Inventory management workspace
+                StockFlow ERP system
               </div>
             </div>
 
             <p className="mt-6 text-center text-xs text-zinc-600">
-              StockFlow ERP · Stock & Warehouse Module
+              Stock & Warehouse Management Module
             </p>
           </div>
         </section>
