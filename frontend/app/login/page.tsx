@@ -4,6 +4,135 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/lib/api";
 
+function WarehouseIcon({ className = "h-8 w-8" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 48 48"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      aria-hidden="true"
+    >
+      <path
+        d="M6 20L24 8L42 20V40H6V20Z"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinejoin="round"
+      />
+
+      <path
+        d="M4 20H44"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+
+      <path
+        d="M13 25H20V32H13V25Z"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
+
+      <path
+        d="M28 25H35V32H28V25Z"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
+
+      <path
+        d="M20 40V32H28V40"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinejoin="round"
+      />
+
+      <path
+        d="M24 8V3"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function PackageIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-5 w-5"
+      aria-hidden="true"
+    >
+      <path
+        d="M3 7L12 3L21 7V17L12 21L3 17V7Z"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M3 7L12 12L21 7M12 12V21"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function WarehouseSmallIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-5 w-5"
+      aria-hidden="true"
+    >
+      <path
+        d="M3 10L12 4L21 10V20H3V10Z"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M2 10H22M8 14H10V17H8V14ZM14 14H16V17H14V14Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function MovementIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-5 w-5"
+      aria-hidden="true"
+    >
+      <path
+        d="M4 17L9 12L13 16L20 8"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M15 8H20V13"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,6 +144,7 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
     setError("");
     setLoading(true);
 
@@ -41,19 +171,22 @@ export default function LoginPage() {
 
   return (
     <main className="relative flex min-h-screen overflow-hidden bg-black text-white">
-      {/* Warehouse background decoration */}
+      {/* Background decoration */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-zinc-800/30 blur-3xl" />
+
         <div className="absolute -bottom-40 -right-40 h-[32rem] w-[32rem] rounded-full bg-zinc-800/20 blur-3xl" />
 
         <div className="absolute inset-0 opacity-30 [background-image:linear-gradient(#27272a_1px,transparent_1px),linear-gradient(90deg,#27272a_1px,transparent_1px)] [background-size:64px_64px]" />
 
+        {/* Warehouse shelves */}
         <div className="absolute bottom-0 left-0 right-0 h-1/2 opacity-40">
           <div className="absolute bottom-0 left-[8%] h-64 w-2 bg-zinc-700" />
           <div className="absolute bottom-0 left-[8%] h-2 w-[34rem] bg-zinc-700" />
           <div className="absolute bottom-32 left-[8%] h-2 w-[34rem] bg-zinc-700" />
           <div className="absolute bottom-64 left-[8%] h-2 w-[34rem] bg-zinc-700" />
 
+          {/* Storage boxes */}
           <div className="absolute bottom-2 left-[14%] h-20 w-24 border border-zinc-700 bg-zinc-900" />
           <div className="absolute bottom-2 left-[28%] h-28 w-28 border border-zinc-700 bg-zinc-900" />
           <div className="absolute bottom-2 left-[43%] h-16 w-20 border border-zinc-700 bg-zinc-900" />
@@ -66,18 +199,19 @@ export default function LoginPage() {
       </div>
 
       <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col lg:flex-row">
-        {/* Branding section */}
+        {/* Left branding section */}
         <section className="hidden flex-1 flex-col justify-center px-12 lg:flex">
           <div className="max-w-lg">
             <div className="mb-6 flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-zinc-700 bg-zinc-900 text-xl font-bold">
-                S
+              <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-zinc-700 bg-zinc-900 text-white">
+                <WarehouseIcon />
               </div>
 
               <div>
                 <p className="text-lg font-semibold tracking-tight">
                   StockFlow
                 </p>
+
                 <p className="text-xs uppercase tracking-[0.25em] text-zinc-500">
                   ERP Management
                 </p>
@@ -87,7 +221,9 @@ export default function LoginPage() {
             <h1 className="text-5xl font-semibold leading-tight tracking-tight">
               Manage your stock.
               <br />
-              <span className="text-zinc-500">Move your business forward.</span>
+              <span className="text-zinc-500">
+                Move your business forward.
+              </span>
             </h1>
 
             <p className="mt-6 max-w-md text-sm leading-6 text-zinc-400">
@@ -97,19 +233,28 @@ export default function LoginPage() {
 
             <div className="mt-10 grid max-w-md grid-cols-3 gap-3">
               <div className="rounded-xl border border-zinc-800 bg-zinc-950/80 p-4">
-                <div className="mb-3 text-zinc-500">▦</div>
+                <div className="mb-3 text-zinc-500">
+                  <PackageIcon />
+                </div>
+
                 <p className="text-sm font-medium">Products</p>
                 <p className="mt-1 text-xs text-zinc-600">Organized</p>
               </div>
 
               <div className="rounded-xl border border-zinc-800 bg-zinc-950/80 p-4">
-                <div className="mb-3 text-zinc-500">⌂</div>
+                <div className="mb-3 text-zinc-500">
+                  <WarehouseSmallIcon />
+                </div>
+
                 <p className="text-sm font-medium">Warehouses</p>
                 <p className="mt-1 text-xs text-zinc-600">Centralized</p>
               </div>
 
               <div className="rounded-xl border border-zinc-800 bg-zinc-950/80 p-4">
-                <div className="mb-3 text-zinc-500">↗</div>
+                <div className="mb-3 text-zinc-500">
+                  <MovementIcon />
+                </div>
+
                 <p className="text-sm font-medium">Movements</p>
                 <p className="mt-1 text-xs text-zinc-600">Tracked</p>
               </div>
@@ -120,12 +265,14 @@ export default function LoginPage() {
         {/* Login section */}
         <section className="flex w-full items-center justify-center px-6 py-10 lg:w-[460px] lg:px-10">
           <div className="w-full max-w-md">
+            {/* Mobile branding */}
             <div className="mb-8 lg:hidden">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-zinc-700 bg-zinc-900 text-xl font-bold">
-                S
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl border border-zinc-700 bg-zinc-900">
+                <WarehouseIcon />
               </div>
 
               <p className="text-lg font-semibold">StockFlow</p>
+
               <p className="mt-1 text-sm text-zinc-500">
                 ERP Stock & Warehouse Management
               </p>
