@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/lib/api";
 
@@ -13,8 +13,13 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!email || !password) {
+      setError("Please enter your email and password.");
+      return;
+    }
 
     setLoading(true);
     setError("");
@@ -25,476 +30,627 @@ export default function LoginPage() {
         password,
       });
 
-      localStorage.setItem("token", response.data.access_token);
+      const { access_token, role } = response.data;
 
-      if (response.data.user?.role) {
-        localStorage.setItem("role", response.data.user.role);
-      }
+      localStorage.setItem("token", access_token);
+      localStorage.setItem("role", role);
 
       router.push("/dashboard");
     } catch (err) {
       console.error("Login error:", err);
-      setError("Invalid email or password");
+      setError("Invalid email or password.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#090909] text-[#f5f5f5]">
-      {/* Background grid */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.13]"
-        style={{
-          backgroundImage: `
-            linear-gradient(#ffffff12 1px, transparent 1px),
-            linear-gradient(90deg, #ffffff12 1px, transparent 1px)
-          `,
-          backgroundSize: "42px 42px",
-        }}
-      />
+    <main className="min-h-screen overflow-hidden bg-[#080808] text-white">
+      {/* Background */}
+      <div className="pointer-events-none fixed inset-0">
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.025)_1px,transparent_1px)] bg-[size:42px_42px]" />
 
-      {/* Ambient colored lights */}
-      <div className="pointer-events-none absolute -left-40 -top-40 h-[420px] w-[420px] rounded-full bg-[#f2b84b]/[0.07] blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-48 right-[-100px] h-[500px] w-[500px] rounded-full bg-[#7ca7e8]/[0.06] blur-3xl" />
+        <div className="absolute -left-32 top-1/4 h-[500px] w-[500px] rounded-full bg-amber-500/[0.035] blur-[120px]" />
 
-      <div className="relative mx-auto flex min-h-screen w-full max-w-7xl items-center px-5 py-8 sm:px-8 lg:px-12">
-        <div className="grid w-full overflow-hidden rounded-3xl border border-[#292929] bg-[#101010]/95 shadow-2xl shadow-black/40 lg:grid-cols-[1.08fr_0.92fr]">
-          {/* Left section */}
-          <section className="relative hidden min-h-[680px] overflow-hidden border-r border-[#292929] bg-[#0d0d0d] p-10 lg:flex lg:flex-col lg:justify-between xl:p-14">
-            {/* Decorative warehouse drawing */}
-            <div className="pointer-events-none absolute inset-0 opacity-[0.18]">
+        <div className="absolute right-0 top-0 h-[450px] w-[450px] rounded-full bg-blue-500/[0.035] blur-[120px]" />
+
+        <div className="absolute bottom-0 left-1/2 h-[350px] w-[500px] -translate-x-1/2 rounded-full bg-emerald-500/[0.025] blur-[120px]" />
+      </div>
+
+      <div className="relative mx-auto flex min-h-screen max-w-[1500px]">
+        {/* =====================================================
+            LEFT SIDE
+        ====================================================== */}
+        <section className="relative hidden w-[55%] flex-col justify-between overflow-hidden border-r border-white/[0.07] px-12 py-10 lg:flex xl:px-16">
+          {/* Logo */}
+          <div className="relative z-20 flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-amber-400/20 bg-amber-400/[0.08]">
               <svg
-                viewBox="0 0 700 700"
-                className="absolute -bottom-8 -right-24 h-[620px] w-[620px]"
+                width="21"
+                height="21"
+                viewBox="0 0 24 24"
                 fill="none"
               >
                 <path
-                  d="M80 300L350 120L620 300V610H80V300Z"
-                  stroke="#f2b84b"
-                  strokeWidth="2"
+                  d="M3 21V8.5L12 3L21 8.5V21"
+                  stroke="#F59E0B"
+                  strokeWidth="1.7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
-                  d="M80 300L350 470L620 300"
-                  stroke="#f2b84b"
-                  strokeWidth="2"
+                  d="M7 21V12H17V21"
+                  stroke="#F59E0B"
+                  strokeWidth="1.7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
-                  d="M350 120V470"
-                  stroke="#f2b84b"
-                  strokeWidth="2"
-                />
-                <path
-                  d="M80 390L350 560L620 390"
-                  stroke="#7ca7e8"
-                  strokeWidth="2"
-                />
-                <path
-                  d="M80 480L350 650L620 480"
-                  stroke="#72c6a0"
-                  strokeWidth="2"
-                />
-                <rect
-                  x="245"
-                  y="365"
-                  width="210"
-                  height="245"
-                  rx="4"
-                  stroke="#f2b84b"
-                  strokeWidth="2"
-                />
-                <path
-                  d="M350 365V610"
-                  stroke="#f2b84b"
-                  strokeWidth="2"
-                />
-                <path
-                  d="M245 425H455M245 485H455M245 545H455"
-                  stroke="#f2b84b"
-                  strokeWidth="2"
-                />
-                <path
-                  d="M150 340V580M550 340V580"
-                  stroke="#7ca7e8"
-                  strokeWidth="2"
-                />
-                <path
-                  d="M130 580H570"
-                  stroke="#72c6a0"
-                  strokeWidth="2"
+                  d="M9.5 15H14.5"
+                  stroke="#F59E0B"
+                  strokeWidth="1.7"
+                  strokeLinecap="round"
                 />
               </svg>
             </div>
 
-            {/* Brand */}
-            <div className="relative z-10">
-              <div className="mb-8 flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#f2b84b]/40 bg-[#f2b84b]/10">
-                  <svg
-                    width="27"
-                    height="27"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#f2b84b"
-                    strokeWidth="1.7"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M3 8L12 3L21 8V19L12 23L3 19V8Z" />
-                    <path d="M3 8L12 13L21 8" />
-                    <path d="M12 13V23" />
-                    <path d="M7.5 5.5L16.5 10.5" />
-                  </svg>
-                </div>
-
-                <div>
-                  <p className="text-xl font-semibold tracking-tight">
-                    Stock<span className="text-[#f2b84b]">Flow</span>
-                  </p>
-                  <p className="text-[10px] uppercase tracking-[0.28em] text-[#777]">
-                    Inventory management
-                  </p>
-                </div>
+            <div>
+              <div className="text-[15px] font-semibold tracking-[0.18em]">
+                STOCKFLOW
               </div>
 
-              <div className="max-w-md">
-                <p className="mb-4 text-xs font-medium uppercase tracking-[0.28em] text-[#f2b84b]">
-                  Control your inventory
-                </p>
-
-                <h1 className="text-4xl font-semibold leading-[1.12] tracking-tight text-[#f5f5f5] xl:text-5xl">
-                  Everything in
-                  <br />
-                  <span className="text-[#f2b84b]">its right place.</span>
-                </h1>
-
-                <p className="mt-6 max-w-sm text-sm leading-7 text-[#929292]">
-                  Manage products, warehouses, stock movements and inventory
-                  counts from one simple workspace.
-                </p>
+              <div className="mt-0.5 text-[9px] uppercase tracking-[0.24em] text-white/35">
+                Inventory Management
               </div>
             </div>
+          </div>
 
-            {/* Feature cards */}
-            <div className="relative z-10 grid max-w-xl grid-cols-3 gap-3">
-              <div className="rounded-2xl border border-[#292929] bg-[#151515]/90 p-4">
-                <div className="mb-5 flex h-9 w-9 items-center justify-center rounded-xl bg-[#f2b84b]/10 text-[#f2b84b]">
-                  <svg
-                    width="19"
-                    height="19"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.7"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M21 8L12 3L3 8L12 13L21 8Z" />
-                    <path d="M3 8V16L12 21L21 16V8" />
-                    <path d="M12 13V21" />
-                  </svg>
-                </div>
+          {/* Main content */}
+          <div className="relative z-20 -mt-4">
+            <div className="mb-5 flex items-center gap-2">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
 
-                <p className="text-sm font-medium text-[#e7e7e7]">Products</p>
-                <p className="mt-1 text-xs text-[#777]">Organized stock</p>
-              </div>
-
-              <div className="rounded-2xl border border-[#292929] bg-[#151515]/90 p-4">
-                <div className="mb-5 flex h-9 w-9 items-center justify-center rounded-xl bg-[#7ca7e8]/10 text-[#7ca7e8]">
-                  <svg
-                    width="19"
-                    height="19"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.7"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M3 21V8L12 3L21 8V21H3Z" />
-                    <path d="M7 21V12H17V21" />
-                    <path d="M7 8H17" />
-                  </svg>
-                </div>
-
-                <p className="text-sm font-medium text-[#e7e7e7]">Warehouses</p>
-                <p className="mt-1 text-xs text-[#777]">Centralized storage</p>
-              </div>
-
-              <div className="rounded-2xl border border-[#292929] bg-[#151515]/90 p-4">
-                <div className="mb-5 flex h-9 w-9 items-center justify-center rounded-xl bg-[#72c6a0]/10 text-[#72c6a0]">
-                  <svg
-                    width="19"
-                    height="19"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.7"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M3 12H21" />
-                    <path d="M16 7L21 12L16 17" />
-                    <path d="M8 17L3 12L8 7" />
-                  </svg>
-                </div>
-
-                <p className="text-sm font-medium text-[#e7e7e7]">Movements</p>
-                <p className="mt-1 text-xs text-[#777]">Real-time tracking</p>
-              </div>
+              <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-emerald-400/80">
+                Warehouse control system
+              </span>
             </div>
-          </section>
 
-          {/* Right section */}
-          <section className="flex min-h-[680px] items-center justify-center bg-[#121212] px-6 py-12 sm:px-12">
-            <div className="w-full max-w-md">
-              {/* Mobile brand */}
-              <div className="mb-12 flex items-center gap-3 lg:hidden">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#f2b84b]/40 bg-[#f2b84b]/10">
-                  <svg
-                    width="25"
-                    height="25"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#f2b84b"
-                    strokeWidth="1.7"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M3 8L12 3L21 8V19L12 23L3 19V8Z" />
-                    <path d="M3 8L12 13L21 8" />
-                    <path d="M12 13V23" />
-                  </svg>
+            <h1 className="max-w-[650px] text-[clamp(42px,4.4vw,72px)] font-semibold leading-[0.98] tracking-[-0.045em]">
+              Keep your stock
+              <br />
+              <span className="text-white/35">under control.</span>
+            </h1>
+
+            <p className="mt-7 max-w-[510px] text-[15px] leading-7 text-white/45">
+              Manage products, warehouses and stock movements from one
+              centralized workspace built for everyday operations.
+            </p>
+
+            {/* Warehouse illustration */}
+            <div className="relative mt-12 h-[300px] w-full max-w-[680px]">
+              {/* Floor shadow */}
+              <div className="absolute bottom-3 left-[7%] right-[5%] h-10 rounded-full bg-black/80 blur-2xl" />
+
+              {/* Warehouse */}
+              <div className="absolute bottom-7 left-[5%] right-[5%] h-[220px] overflow-hidden rounded-[10px] border border-white/[0.08] bg-[#0d0d0d] shadow-2xl">
+                {/* Roof */}
+                <div className="absolute left-0 right-0 top-0 h-9 border-b border-white/[0.07] bg-[#111]">
+                  <div className="flex h-full items-center gap-1.5 px-4">
+                    {Array.from({ length: 13 }).map((_, index) => (
+                      <span
+                        key={index}
+                        className="h-1 w-8 rounded-full bg-white/[0.035]"
+                      />
+                    ))}
+                  </div>
                 </div>
 
-                <div>
-                  <p className="text-xl font-semibold">
-                    Stock<span className="text-[#f2b84b]">Flow</span>
-                  </p>
-                  <p className="text-[10px] uppercase tracking-[0.25em] text-[#777]">
-                    Inventory management
-                  </p>
+                {/* Left wall */}
+                <div className="absolute bottom-0 left-0 top-9 w-[24%] border-r border-white/[0.06] bg-[#101010]">
+                  <div className="absolute left-5 top-8 h-24 w-[3px] bg-amber-400/50" />
+
+                  <div className="absolute left-10 right-5 top-8 space-y-3">
+                    <div className="h-2 rounded bg-white/[0.06]" />
+                    <div className="h-2 w-2/3 rounded bg-white/[0.04]" />
+                    <div className="h-2 w-4/5 rounded bg-white/[0.04]" />
+                  </div>
+                </div>
+
+                {/* Main warehouse */}
+                <div className="absolute bottom-0 left-[24%] right-0 top-9">
+                  {/* Ceiling lights */}
+                  <div className="absolute left-[8%] right-[8%] top-6 flex justify-between">
+                    <span className="h-1 w-16 rounded-full bg-white/20 blur-[1px]" />
+                    <span className="h-1 w-16 rounded-full bg-white/20 blur-[1px]" />
+                    <span className="h-1 w-16 rounded-full bg-white/20 blur-[1px]" />
+                  </div>
+
+                  {/* Shelf 1 */}
+                  <div className="absolute bottom-10 left-[7%] h-[130px] w-[23%]">
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20" />
+                    <div className="absolute bottom-[42px] left-0 right-0 h-1 bg-white/20" />
+                    <div className="absolute bottom-[84px] left-0 right-0 h-1 bg-white/20" />
+
+                    <div className="absolute bottom-0 left-1 h-full w-[2px] bg-white/10" />
+                    <div className="absolute bottom-0 right-1 h-full w-[2px] bg-white/10" />
+
+                    <div className="absolute bottom-[49px] left-3 h-7 w-9 rounded-sm border border-amber-300/10 bg-amber-400/15" />
+                    <div className="absolute bottom-[49px] left-14 h-7 w-7 rounded-sm border border-emerald-300/10 bg-emerald-400/10" />
+
+                    <div className="absolute bottom-[91px] left-4 h-7 w-6 rounded-sm bg-blue-400/10" />
+                    <div className="absolute bottom-[91px] left-11 h-7 w-10 rounded-sm bg-amber-400/10" />
+
+                    <div className="absolute bottom-[7px] left-5 h-7 w-8 rounded-sm bg-white/[0.05]" />
+                    <div className="absolute bottom-[7px] left-16 h-7 w-6 rounded-sm bg-white/[0.04]" />
+                  </div>
+
+                  {/* Shelf 2 */}
+                  <div className="absolute bottom-10 left-[35%] h-[130px] w-[23%]">
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20" />
+                    <div className="absolute bottom-[42px] left-0 right-0 h-1 bg-white/20" />
+                    <div className="absolute bottom-[84px] left-0 right-0 h-1 bg-white/20" />
+
+                    <div className="absolute bottom-0 left-1 h-full w-[2px] bg-white/10" />
+                    <div className="absolute bottom-0 right-1 h-full w-[2px] bg-white/10" />
+
+                    <div className="absolute bottom-[49px] left-3 h-7 w-8 rounded-sm bg-blue-400/10" />
+                    <div className="absolute bottom-[49px] left-14 h-7 w-9 rounded-sm bg-amber-400/10" />
+
+                    <div className="absolute bottom-[91px] left-5 h-7 w-10 rounded-sm bg-emerald-400/10" />
+                    <div className="absolute bottom-[91px] left-16 h-7 w-6 rounded-sm bg-white/[0.05]" />
+                  </div>
+
+                  {/* Loading door */}
+                  <div className="absolute bottom-0 right-[6%] h-[150px] w-[25%] border-x border-t border-white/[0.08] bg-[#090909]">
+                    <div className="absolute inset-x-3 top-3 h-[2px] bg-white/[0.06]" />
+                    <div className="absolute inset-x-3 top-9 h-[2px] bg-white/[0.05]" />
+                    <div className="absolute inset-x-3 top-[63px] h-[2px] bg-white/[0.05]" />
+                    <div className="absolute inset-x-3 top-[87px] h-[2px] bg-white/[0.05]" />
+
+                    <div className="absolute bottom-0 left-1/2 top-0 w-px -translate-x-1/2 bg-white/[0.04]" />
+
+                    <div className="absolute bottom-0 left-1/2 h-1 w-12 -translate-x-1/2 rounded-t bg-amber-400/30 shadow-[0_0_18px_rgba(245,158,11,0.18)]" />
+                  </div>
+
+                  {/* Floor */}
+                  <div className="absolute bottom-4 left-0 right-0 h-px bg-white/[0.07]" />
                 </div>
               </div>
 
-              <div className="mb-9">
-                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#72c6a0]/20 bg-[#72c6a0]/[0.07] px-3 py-1.5">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#72c6a0]" />
-                  <span className="text-[11px] font-medium text-[#9ad8bb]">
-                    Secure workspace
+              {/* Inventory card */}
+              <div className="absolute left-[1%] top-[8%] w-[190px] rounded-xl border border-white/[0.09] bg-[#121212]/95 p-4 shadow-[0_20px_50px_rgba(0,0,0,0.45)] backdrop-blur-xl transition duration-500 hover:-translate-y-2 hover:border-amber-400/20">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] uppercase tracking-[0.18em] text-white/35">
+                    Inventory
+                  </span>
+
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
+                </div>
+
+                <div className="mt-3 flex items-end justify-between">
+                  <span className="text-2xl font-semibold tracking-tight">
+                    98.4%
+                  </span>
+
+                  <span className="mb-1 text-[10px] text-emerald-400/70">
+                    accurate
                   </span>
                 </div>
 
-                <h2 className="text-3xl font-semibold tracking-tight text-[#f5f5f5]">
-                  Welcome back
-                </h2>
-
-                <p className="mt-3 text-sm leading-6 text-[#858585]">
-                  Sign in to continue managing your inventory.
-                </p>
+                <div className="mt-3 h-1 overflow-hidden rounded-full bg-white/[0.06]">
+                  <div className="h-full w-[84%] rounded-full bg-emerald-400/60" />
+                </div>
               </div>
 
-              <form onSubmit={handleLogin} className="space-y-5">
-                {/* Email */}
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="mb-2 block text-xs font-medium uppercase tracking-[0.13em] text-[#a3a3a3]"
+              {/* Movement card */}
+              <div className="absolute bottom-[-3%] right-[2%] w-[205px] rounded-xl border border-white/[0.09] bg-[#121212]/95 p-4 shadow-[0_20px_50px_rgba(0,0,0,0.45)] backdrop-blur-xl transition duration-500 hover:-translate-y-2 hover:border-blue-400/20">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] uppercase tracking-[0.18em] text-white/35">
+                    Stock movement
+                  </span>
+
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
                   >
-                    Email address
-                  </label>
-
-                  <div className="group relative">
-                    <div className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#666] transition-colors group-focus-within:text-[#f2b84b]">
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.6"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <rect x="3" y="5" width="18" height="14" rx="2" />
-                        <path d="M3 7L12 13L21 7" />
-                      </svg>
-                    </div>
-
-                    <input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="you@example.com"
-                      required
-                      autoComplete="email"
-                      className="w-full rounded-xl border border-[#303030] bg-[#0c0c0c] py-3.5 pl-12 pr-4 text-sm text-[#f5f5f5] outline-none transition placeholder:text-[#555] focus:border-[#f2b84b]/70 focus:ring-4 focus:ring-[#f2b84b]/[0.07]"
-                    />
-                  </div>
-                </div>
-
-                {/* Password */}
-                <div>
-                  <div className="mb-2 flex items-center justify-between">
-                    <label
-                      htmlFor="password"
-                      className="block text-xs font-medium uppercase tracking-[0.13em] text-[#a3a3a3]"
-                    >
-                      Password
-                    </label>
-                  </div>
-
-                  <div className="group relative">
-                    <div className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#666] transition-colors group-focus-within:text-[#f2b84b]">
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.6"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <rect x="4" y="10" width="16" height="11" rx="2" />
-                        <path d="M8 10V7A4 4 0 0 1 16 7V10" />
-                      </svg>
-                    </div>
-
-                    <input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Enter your password"
-                      required
-                      autoComplete="current-password"
-                      className="w-full rounded-xl border border-[#303030] bg-[#0c0c0c] py-3.5 pl-12 pr-12 text-sm text-[#f5f5f5] outline-none transition placeholder:text-[#555] focus:border-[#f2b84b]/70 focus:ring-4 focus:ring-[#f2b84b]/[0.07]"
+                    <path
+                      d="M5 12H19"
+                      stroke="#60A5FA"
+                      strokeWidth="1.7"
+                      strokeLinecap="round"
                     />
 
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword((value) => !value)}
-                      aria-label={
-                        showPassword ? "Hide password" : "Show password"
-                      }
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-[#666] transition hover:text-[#f2b84b]"
-                    >
-                      {showPassword ? (
-                        <svg
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.6"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M3 3L21 21" />
-                          <path d="M10.6 10.6A2 2 0 0 0 13.4 13.4" />
-                          <path d="M9.9 4.3A10.8 10.8 0 0 1 12 4C17 4 20.5 8 22 12C21.4 13.6 20.4 15.2 19 16.5" />
-                          <path d="M6.2 6.2C4.6 7.5 3.4 9.3 2 12C3.5 16 7 20 12 20C13.7 20 15.2 19.6 16.6 18.8" />
-                        </svg>
-                      ) : (
-                        <svg
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.6"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M2 12C3.5 8 7 4 12 4C17 4 20.5 8 22 12C20.5 16 17 20 12 20C7 20 3.5 16 2 12Z" />
-                          <circle cx="12" cy="12" r="3" />
-                        </svg>
-                      )}
-                    </button>
-                  </div>
+                    <path
+                      d="M13 6L19 12L13 18"
+                      stroke="#60A5FA"
+                      strokeWidth="1.7"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
                 </div>
 
-                {/* Error */}
-                {error && (
-                  <div className="rounded-xl border border-red-500/20 bg-red-500/[0.07] px-4 py-3 text-sm text-red-300">
-                    {error}
+                <div className="mt-3 flex items-center gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-400/[0.08]">
+                    <span className="text-sm text-blue-300">↗</span>
                   </div>
-                )}
 
-                {/* Submit */}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="group flex w-full items-center justify-center gap-3 rounded-xl bg-[#f2b84b] px-5 py-3.5 text-sm font-semibold text-[#17120a] transition hover:bg-[#ffca68] focus:outline-none focus:ring-4 focus:ring-[#f2b84b]/20 disabled:cursor-not-allowed disabled:opacity-60"
+                  <div>
+                    <div className="text-sm font-medium text-white/80">
+                      Incoming
+                    </div>
+
+                    <div className="text-[10px] text-white/30">
+                      Updated just now
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="relative z-20 flex items-center justify-between border-t border-white/[0.06] pt-5 text-[10px] uppercase tracking-[0.18em] text-white/25">
+            <span>Secure workspace</span>
+            <span>StockFlow © 2026</span>
+          </div>
+        </section>
+
+        {/* =====================================================
+            RIGHT SIDE
+        ====================================================== */}
+        <section className="flex w-full items-center justify-center px-6 py-10 sm:px-10 lg:w-[45%] lg:px-14 xl:px-20">
+          <div className="w-full max-w-[430px]">
+            {/* Mobile logo */}
+            <div className="mb-12 flex items-center gap-3 lg:hidden">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-amber-400/20 bg-amber-400/[0.08]">
+                <svg
+                  width="21"
+                  height="21"
+                  viewBox="0 0 24 24"
+                  fill="none"
                 >
-                  {loading ? (
-                    <>
+                  <path
+                    d="M3 21V8.5L12 3L21 8.5V21"
+                    stroke="#F59E0B"
+                    strokeWidth="1.7"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+
+                  <path
+                    d="M7 21V12H17V21"
+                    stroke="#F59E0B"
+                    strokeWidth="1.7"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+
+                  <path
+                    d="M9.5 15H14.5"
+                    stroke="#F59E0B"
+                    strokeWidth="1.7"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </div>
+
+              <div>
+                <div className="text-[15px] font-semibold tracking-[0.18em]">
+                  STOCKFLOW
+                </div>
+
+                <div className="text-[9px] uppercase tracking-[0.24em] text-white/35">
+                  Inventory Management
+                </div>
+              </div>
+            </div>
+
+            {/* Heading */}
+            <div className="mb-9">
+              <div className="mb-4 flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+
+                <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-amber-400/75">
+                  Access portal
+                </span>
+              </div>
+
+              <h2 className="text-3xl font-semibold tracking-[-0.035em] sm:text-[36px]">
+                Welcome back.
+              </h2>
+
+              <p className="mt-3 text-sm leading-6 text-white/35">
+                Sign in to access your inventory workspace.
+              </p>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleLogin} className="space-y-5">
+              {/* Email */}
+              <div>
+                <label
+                  htmlFor="email"
+                  className="mb-2.5 block text-[11px] font-medium uppercase tracking-[0.16em] text-white/45"
+                >
+                  Email address
+                </label>
+
+                <div className="group relative">
+                  <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center">
+                    <svg
+                      width="17"
+                      height="17"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      className="text-white/25 transition-colors duration-200 group-focus-within:text-amber-400/70"
+                    >
+                      <path
+                        d="M4 6H20V18H4V6Z"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinejoin="round"
+                      />
+
+                      <path
+                        d="M4 7L12 13L20 7"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+
+                  <input
+                    id="email"
+                    type="email"
+                    autoComplete="email"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setError("");
+                    }}
+                    placeholder="you@company.com"
+                    className="h-14 w-full rounded-xl border border-white/[0.09] bg-white/[0.025] pl-12 pr-4 text-sm text-white outline-none transition-all duration-200 placeholder:text-white/20 hover:border-white/[0.14] focus:border-amber-400/35 focus:bg-white/[0.035] focus:shadow-[0_0_0_3px_rgba(245,158,11,0.045)]"
+                  />
+                </div>
+              </div>
+
+              {/* Password */}
+              <div>
+                <label
+                  htmlFor="password"
+                  className="mb-2.5 block text-[11px] font-medium uppercase tracking-[0.16em] text-white/45"
+                >
+                  Password
+                </label>
+
+                <div className="group relative">
+                  <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center">
+                    <svg
+                      width="17"
+                      height="17"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      className="text-white/25 transition-colors duration-200 group-focus-within:text-amber-400/70"
+                    >
+                      <rect
+                        x="5"
+                        y="10"
+                        width="14"
+                        height="10"
+                        rx="2"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                      />
+
+                      <path
+                        d="M8 10V7.5C8 5.29 9.79 3.5 12 3.5C14.21 3.5 16 5.29 16 7.5V10"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </div>
+
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setError("");
+                    }}
+                    placeholder="Enter your password"
+                    className="h-14 w-full rounded-xl border border-white/[0.09] bg-white/[0.025] pl-12 pr-12 text-sm text-white outline-none transition-all duration-200 placeholder:text-white/20 hover:border-white/[0.14] focus:border-amber-400/35 focus:bg-white/[0.035] focus:shadow-[0_0_0_3px_rgba(245,158,11,0.045)]"
+                  />
+
+                  {/* Show / hide */}
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((value) => !value)}
+                    className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-white/25 transition-colors duration-200 hover:text-white/65"
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
+                  >
+                    {showPassword ? (
                       <svg
-                        className="h-5 w-5 animate-spin"
+                        width="18"
+                        height="18"
                         viewBox="0 0 24 24"
                         fill="none"
                       >
+                        <path
+                          d="M3 3L21 21"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+
+                        <path
+                          d="M10.6 10.7C10.23 11.05 10 11.5 10 12C10 13.1 10.9 14 12 14C12.5 14 12.95 13.77 13.3 13.4"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+
+                        <path
+                          d="M9.88 5.2C10.56 5.06 11.27 5 12 5C17.5 5 21 12 21 12C21 12 19.55 14.9 17 16.7"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+
+                        <path
+                          d="M6.3 6.3C4.15 7.9 3 12 3 12C3 12 6.5 19 12 19C13.1 19 14.14 18.78 15.1 18.4"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
+                        <path
+                          d="M2.5 12C2.5 12 6 5 12 5C18 5 21.5 12 21.5 12C21.5 12 18 19 12 19C6 19 2.5 12 2.5 12Z"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                        />
+
                         <circle
                           cx="12"
                           cy="12"
-                          r="9"
+                          r="3"
                           stroke="currentColor"
-                          strokeWidth="2"
-                          strokeOpacity="0.3"
-                        />
-                        <path
-                          d="M21 12A9 9 0 0 0 12 3"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
+                          strokeWidth="1.5"
                         />
                       </svg>
-                      Signing in...
-                    </>
-                  ) : (
-                    <>
-                      Sign in to StockFlow
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Error */}
+              {error && (
+                <div className="flex items-center gap-3 rounded-xl border border-red-400/15 bg-red-400/[0.05] px-4 py-3 text-sm text-red-300/80">
+                  <svg
+                    width="17"
+                    height="17"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    className="shrink-0"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="9"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                    />
+
+                    <path
+                      d="M12 8V12"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+
+                    <circle
+                      cx="12"
+                      cy="16"
+                      r="0.8"
+                      fill="currentColor"
+                    />
+                  </svg>
+
+                  <span>{error}</span>
+                </div>
+              )}
+
+              {/* Login button */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="group relative mt-2 flex h-14 w-full items-center justify-center overflow-hidden rounded-xl bg-amber-400 text-sm font-semibold text-[#111] shadow-[0_10px_35px_rgba(245,158,11,0.08)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-amber-300 hover:shadow-[0_14px_40px_rgba(245,158,11,0.15)] active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {/* Shine */}
+                <span className="absolute inset-y-0 -left-20 w-20 -skew-x-12 bg-white/25 transition-all duration-700 group-hover:left-[120%]" />
+
+                {loading ? (
+                  <span className="relative flex items-center gap-3">
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-black/20 border-t-black" />
+                    Signing in...
+                  </span>
+                ) : (
+                  <span className="relative flex items-center gap-2">
+                    Sign in
+
+                    <svg
+                      width="17"
+                      height="17"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      className="transition-transform duration-200 group-hover:translate-x-1"
+                    >
+                      <path
+                        d="M5 12H19"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                      />
+
+                      <path
+                        d="M13 6L19 12L13 18"
                         stroke="currentColor"
                         strokeWidth="1.8"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="transition-transform group-hover:translate-x-1"
-                      >
-                        <path d="M5 12H19" />
-                        <path d="M13 6L19 12L13 18" />
-                      </svg>
-                    </>
-                  )}
-                </button>
-              </form>
+                      />
+                    </svg>
+                  </span>
+                )}
+              </button>
+            </form>
 
-              {/* Footer */}
-              <div className="mt-10 flex items-center justify-center gap-2 text-xs text-[#555]">
-                <svg
+            {/* Security note */}
+            <div className="mt-8 flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.15em] text-white/20">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <rect
+                  x="5"
+                  y="10"
                   width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
+                  height="10"
+                  rx="2"
                   stroke="currentColor"
-                  strokeWidth="1.6"
+                  strokeWidth="1.5"
+                />
+
+                <path
+                  d="M8 10V7.5C8 5.29 9.79 3.5 12 3.5C14.21 3.5 16 5.29 16 7.5V10"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
                   strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <rect x="5" y="10" width="14" height="10" rx="2" />
-                  <path d="M8 10V7A4 4 0 0 1 16 7V10" />
-                </svg>
-                Your workspace is protected
-              </div>
+                />
+              </svg>
+
+              Secure access
             </div>
-          </section>
-        </div>
+          </div>
+        </section>
       </div>
     </main>
   );
