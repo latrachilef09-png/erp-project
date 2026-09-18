@@ -62,30 +62,274 @@ interface Movement {
   createdAt: string;
 }
 
+/* ============================================================
+   ICONS
+============================================================ */
+
+function PackageIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      className={className}
+    >
+      <path
+        d="M21 8.5L12 4L3 8.5L12 13L21 8.5Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M3 8.5V17L12 21L21 17V8.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M12 13V21"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+}
+
+function CategoryIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      className={className}
+    >
+      <path
+        d="M4 6.5L12 3L20 6.5L12 10L4 6.5Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M4 12L12 15.5L20 12"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M4 17.5L12 21L20 17.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function WarehouseIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      className={className}
+    >
+      <path
+        d="M3 21V8L12 3L21 8V21"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M7 21V12H17V21"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M9.5 15H14.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+}
+
+function MovementIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      className={className}
+    >
+      <path
+        d="M5 7H19"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M15 3L19 7L15 11"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M19 17H5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M9 13L5 17L9 21"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function DownloadIcon() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+    >
+      <path
+        d="M12 3V15"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
+      <path
+        d="M7 11L12 16L17 11"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M4 20H20"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function ArrowIcon() {
+  return (
+    <svg
+      width="15"
+      height="15"
+      viewBox="0 0 24 24"
+      fill="none"
+    >
+      <path
+        d="M5 12H19"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
+      <path
+        d="M13 6L19 12L13 18"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/* ============================================================
+   STAT CARD
+============================================================ */
+
 function StatCard({
   title,
   value,
   href,
-  valueColor = "text-white",
+  icon,
+  accent,
 }: {
   title: string;
   value: number;
   href: string;
-  valueColor?: string;
+  icon: React.ReactNode;
+  accent: "blue" | "violet" | "emerald" | "amber";
 }) {
+  const accentStyles = {
+    blue: {
+      icon: "bg-blue-400/[0.08] text-blue-400",
+      value: "text-blue-400",
+      hover: "hover:border-blue-400/20",
+    },
+    violet: {
+      icon: "bg-violet-400/[0.08] text-violet-400",
+      value: "text-violet-400",
+      hover: "hover:border-violet-400/20",
+    },
+    emerald: {
+      icon: "bg-emerald-400/[0.08] text-emerald-400",
+      value: "text-emerald-400",
+      hover: "hover:border-emerald-400/20",
+    },
+    amber: {
+      icon: "bg-amber-400/[0.08] text-amber-400",
+      value: "text-amber-400",
+      hover: "hover:border-amber-400/20",
+    },
+  };
+
+  const styles = accentStyles[accent];
+
   return (
     <Link
       href={href}
-      className="rounded-xl border border-zinc-800 bg-zinc-950 p-5 transition hover:border-zinc-600"
+      className={`group relative overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0d0d0d] p-5 transition-all duration-300 hover:-translate-y-1 ${styles.hover}`}
     >
-      <p className="text-sm text-zinc-400">{title}</p>
+      <div className="absolute right-0 top-0 h-24 w-24 rounded-full bg-white/[0.015] blur-2xl transition-all duration-500 group-hover:scale-150" />
 
-      <p className={`mt-2 text-3xl font-semibold ${valueColor}`}>
-        {value}
-      </p>
+      <div className="relative flex items-start justify-between">
+        <div
+          className={`flex h-10 w-10 items-center justify-center rounded-xl ${styles.icon}`}
+        >
+          {icon}
+        </div>
+
+        <div className="text-white/15 transition-all duration-200 group-hover:translate-x-1 group-hover:text-white/40">
+          <ArrowIcon />
+        </div>
+      </div>
+
+      <div className="relative mt-6">
+        <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-white/35">
+          {title}
+        </p>
+
+        <p
+          className={`mt-2 text-3xl font-semibold tracking-tight ${styles.value}`}
+        >
+          {value}
+        </p>
+      </div>
     </Link>
   );
 }
+
+/* ============================================================
+   DASHBOARD
+============================================================ */
 
 export default function DashboardPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -95,6 +339,7 @@ export default function DashboardPage() {
   const [lowStockItems, setLowStockItems] = useState<LowStockItem[]>([]);
   const [movements, setMovements] = useState<Movement[]>([]);
   const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     async function loadDashboard() {
@@ -204,13 +449,6 @@ export default function DashboardPage() {
       .filter((warehouse) => warehouse.total > 0);
   }, [warehouses, stockLevels]);
 
-  /*
-   * Convert a Date to a local calendar date.
-   *
-   * We intentionally do NOT use toISOString() here because
-   * toISOString() converts the date to UTC and can move a
-   * movement to the previous day in Tunisia.
-   */
   const getLocalDateKey = (date: Date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -280,6 +518,8 @@ export default function DashboardPage() {
 
   async function handleExportStock() {
     try {
+      setExporting(true);
+
       const response = await api.get("/stock-levels/export", {
         responseType: "blob",
       });
@@ -288,6 +528,7 @@ export default function DashboardPage() {
       const url = window.URL.createObjectURL(blob);
 
       const link = document.createElement("a");
+
       link.href = url;
       link.download = "stock-export.xlsx";
 
@@ -299,52 +540,83 @@ export default function DashboardPage() {
     } catch (error) {
       console.error("Failed to export stock:", error);
       alert("Failed to export stock.");
+    } finally {
+      setExporting(false);
     }
   }
 
+  /* ============================================================
+     LOADING
+  ============================================================ */
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-black text-white">
+      <div className="min-h-screen bg-[#080808] text-white">
         <Navbar />
 
-        <main className="mx-auto max-w-7xl px-6 py-10">
-          <div className="animate-pulse space-y-6">
-            <div className="h-8 w-64 rounded bg-zinc-800" />
-            <div className="h-4 w-96 rounded bg-zinc-900" />
+        <main className="mx-auto max-w-[1400px] px-6 py-10">
+          <div className="animate-pulse space-y-7">
+            <div className="h-4 w-36 rounded bg-white/[0.05]" />
+
+            <div className="h-10 w-72 rounded bg-white/[0.06]" />
+
+            <div className="h-4 w-[450px] max-w-full rounded bg-white/[0.04]" />
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               {[1, 2, 3, 4].map((item) => (
                 <div
                   key={item}
-                  className="h-28 rounded-xl bg-zinc-900"
+                  className="h-36 rounded-2xl bg-[#0d0d0d]"
                 />
               ))}
             </div>
 
-            <div className="h-80 rounded-xl bg-zinc-900" />
+            <div className="h-72 rounded-2xl bg-[#0d0d0d]" />
           </div>
         </main>
       </div>
     );
   }
 
+  /* ============================================================
+     MAIN
+  ============================================================ */
+
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen overflow-x-hidden bg-[#080808] text-white">
       <Navbar />
 
-      <main className="mx-auto max-w-7xl px-6 py-10">
-        {/* Header */}
-        <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
+      {/* Ambient background */}
+      <div className="pointer-events-none fixed inset-0">
+        <div className="absolute right-[-200px] top-[100px] h-[500px] w-[500px] rounded-full bg-blue-500/[0.025] blur-[130px]" />
+
+        <div className="absolute left-[-250px] top-[500px] h-[500px] w-[500px] rounded-full bg-amber-500/[0.018] blur-[130px]" />
+      </div>
+
+      <main className="relative mx-auto max-w-[1400px] px-5 py-8 sm:px-6 lg:px-8 lg:py-10">
+        {/* ======================================================
+            HEADER
+        ======================================================= */}
+
+        <header className="flex flex-col justify-between gap-6 border-b border-white/[0.06] pb-8 md:flex-row md:items-end">
           <div>
-            <p className="text-sm text-zinc-500">
+            <div className="mb-4 flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
+
+              <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-emerald-400/70">
+                System overview
+              </span>
+            </div>
+
+            <p className="text-xs uppercase tracking-[0.15em] text-white/25">
               ERP / Stock Management
             </p>
 
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight">
+            <h1 className="mt-2 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">
               Inventory Dashboard
             </h1>
 
-            <p className="mt-2 text-sm text-zinc-400">
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-white/35">
               Overview of products, warehouses, stock levels and
               inventory activity.
             </p>
@@ -352,133 +624,175 @@ export default function DashboardPage() {
 
           <button
             onClick={handleExportStock}
-            className="rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800"
+            disabled={exporting}
+            className="group flex h-11 items-center justify-center gap-2 rounded-xl border border-white/[0.09] bg-white/[0.025] px-5 text-sm font-medium text-white/75 transition-all duration-200 hover:border-amber-400/25 hover:bg-amber-400/[0.05] hover:text-amber-300 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Export Stock
-          </button>
-        </div>
+            <DownloadIcon />
 
-        {/* Statistics */}
-        <section className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {exporting ? "Exporting..." : "Export Stock"}
+          </button>
+        </header>
+
+        {/* ======================================================
+            STATISTICS
+        ======================================================= */}
+
+        <section className="mt-7 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatCard
             title="Products"
             value={products.length}
             href="/products"
-            valueColor="text-blue-400"
+            icon={<PackageIcon />}
+            accent="blue"
           />
 
           <StatCard
             title="Categories"
             value={categories.length}
             href="/categories"
-            valueColor="text-violet-400"
+            icon={<CategoryIcon />}
+            accent="violet"
           />
 
           <StatCard
             title="Warehouses"
             value={warehouses.length}
             href="/warehouses"
-            valueColor="text-emerald-400"
+            icon={<WarehouseIcon />}
+            accent="emerald"
           />
 
           <StatCard
             title="Stock Movements"
             value={movements.length}
             href="/stock-movements"
-            valueColor="text-orange-400"
+            icon={<MovementIcon />}
+            accent="amber"
           />
         </section>
 
-        {/* Stock Overview */}
-        <section className="mt-6 rounded-xl border border-zinc-800 bg-zinc-950 p-6">
-          <div>
-            <h2 className="text-lg font-semibold">
-              Stock Overview
-            </h2>
+        {/* ======================================================
+            STOCK OVERVIEW
+        ======================================================= */}
 
-            <p className="mt-1 text-sm text-zinc-500">
-              Current inventory status across all stock records.
-            </p>
+        <section className="mt-5 overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0d0d0d]">
+          <div className="flex flex-col justify-between gap-3 border-b border-white/[0.06] px-6 py-5 sm:flex-row sm:items-center">
+            <div>
+              <h2 className="text-base font-semibold">
+                Stock Overview
+              </h2>
+
+              <p className="mt-1 text-xs text-white/30">
+                Current inventory status across all stock records.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.15em] text-white/25">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+              Live inventory data
+            </div>
           </div>
 
-          <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            <div>
-              <p className="text-sm text-zinc-500">Total Units</p>
+          <div className="grid divide-y divide-white/[0.05] sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:divide-x lg:divide-white/[0.05]">
+            <div className="p-6">
+              <p className="text-[10px] uppercase tracking-[0.15em] text-white/30">
+                Total Units
+              </p>
 
-              <p className="mt-1 text-2xl font-semibold text-blue-400">
+              <p className="mt-2 text-2xl font-semibold text-blue-400">
                 {totalUnits}
               </p>
             </div>
 
-            <div>
-              <p className="text-sm text-zinc-500">Stock Records</p>
+            <div className="p-6">
+              <p className="text-[10px] uppercase tracking-[0.15em] text-white/30">
+                Stock Records
+              </p>
 
-              <p className="mt-1 text-2xl font-semibold text-white">
+              <p className="mt-2 text-2xl font-semibold">
                 {stockLevels.length}
               </p>
             </div>
 
-            <div>
-              <p className="text-sm text-zinc-500">Low Stock</p>
+            <div className="p-6">
+              <p className="text-[10px] uppercase tracking-[0.15em] text-white/30">
+                Low Stock
+              </p>
 
-              <p className="mt-1 text-2xl font-semibold text-yellow-400">
+              <p className="mt-2 text-2xl font-semibold text-amber-400">
                 {lowStockItems.length}
               </p>
             </div>
 
-            <div>
-              <p className="text-sm text-zinc-500">
+            <div className="p-6">
+              <p className="text-[10px] uppercase tracking-[0.15em] text-white/30">
                 Out of Stock
               </p>
 
-              <p className="mt-1 text-2xl font-semibold text-red-400">
+              <p className="mt-2 text-2xl font-semibold text-red-400">
                 {outOfStockCount}
               </p>
             </div>
           </div>
 
-          <div className="mt-6">
-            <div className="mb-2 flex items-center justify-between text-sm">
-              <span className="text-zinc-400">
+          {/* Health */}
+          <div className="border-t border-white/[0.06] px-6 py-5">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-xs text-white/35">
                 Stock health
               </span>
 
-              <span className="font-medium text-emerald-400">
+              <span className="text-xs font-medium text-emerald-400">
                 {stockHealth}%
               </span>
             </div>
 
-            <div className="h-2 overflow-hidden rounded-full bg-zinc-800">
+            <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
               <div
-                className="h-full rounded-full bg-emerald-500 transition-all"
-                style={{ width: `${stockHealth}%` }}
+                className="h-full rounded-full bg-emerald-400 transition-all duration-700"
+                style={{
+                  width: `${stockHealth}%`,
+                }}
               />
             </div>
           </div>
         </section>
 
-        {/* Charts */}
-        <section className="mt-6 grid gap-6 lg:grid-cols-2">
-          {/* Stock by Warehouse */}
-          <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-6">
-            <div>
-              <h2 className="text-lg font-semibold">
-                Stock by Warehouse
-              </h2>
+        {/* ======================================================
+            CHARTS
+        ======================================================= */}
 
-              <p className="mt-1 text-sm text-zinc-500">
-                Current quantity stored in each active warehouse.
-              </p>
+        <section className="mt-5 grid gap-5 lg:grid-cols-2">
+          {/* Warehouse chart */}
+          <div className="rounded-2xl border border-white/[0.07] bg-[#0d0d0d] p-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <h2 className="text-base font-semibold">
+                  Stock by Warehouse
+                </h2>
+
+                <p className="mt-1 text-xs text-white/30">
+                  Current quantity stored in each active warehouse.
+                </p>
+              </div>
+
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-400/[0.07] text-blue-400">
+                <WarehouseIcon />
+              </div>
             </div>
 
             {warehouseStock.length === 0 ? (
-              <div className="mt-10 flex min-h-48 items-center justify-center text-center">
-                <div>
-                  <p className="text-sm font-medium text-zinc-300">
-                    No stock is currently assigned to a warehouse.
+              <div className="mt-8 flex min-h-[230px] items-center justify-center rounded-xl border border-dashed border-white/[0.07]">
+                <div className="px-6 text-center">
+                  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.03] text-white/20">
+                    <WarehouseIcon />
+                  </div>
+
+                  <p className="mt-4 text-sm font-medium text-white/50">
+                    No stock assigned
                   </p>
 
-                  <p className="mt-1 text-xs text-zinc-500">
+                  <p className="mx-auto mt-1 max-w-xs text-xs leading-5 text-white/25">
                     Stock quantities will appear here when inventory
                     is available.
                   </p>
@@ -487,20 +801,23 @@ export default function DashboardPage() {
             ) : (
               <div className="mt-8 space-y-5">
                 {warehouseStock.map((warehouse) => (
-                  <div key={warehouse.id}>
-                    <div className="mb-2 flex items-center justify-between text-sm">
-                      <span className="text-zinc-300">
+                  <div
+                    key={warehouse.id}
+                    className="group"
+                  >
+                    <div className="mb-2 flex items-center justify-between">
+                      <span className="text-xs text-white/50 transition-colors group-hover:text-white/75">
                         {warehouse.name}
                       </span>
 
-                      <span className="font-medium text-blue-400">
+                      <span className="text-xs font-medium text-blue-400">
                         {warehouse.total}
                       </span>
                     </div>
 
-                    <div className="h-3 overflow-hidden rounded-full bg-zinc-800">
+                    <div className="h-2 overflow-hidden rounded-full bg-white/[0.05]">
                       <div
-                        className="h-full rounded-full bg-blue-500 transition-all"
+                        className="h-full rounded-full bg-blue-400 transition-all duration-700 group-hover:bg-blue-300"
                         style={{
                           width: `${
                             (warehouse.total /
@@ -516,33 +833,43 @@ export default function DashboardPage() {
             )}
           </div>
 
-          {/* Stock Movement Trend */}
-          <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-6">
-            <div>
-              <h2 className="text-lg font-semibold">
-                Stock Movement Trend
-              </h2>
+          {/* Movement chart */}
+          <div className="rounded-2xl border border-white/[0.07] bg-[#0d0d0d] p-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <h2 className="text-base font-semibold">
+                  Stock Movement Trend
+                </h2>
 
-              <p className="mt-1 text-sm text-zinc-500">
-                Movement quantity over the last 7 days.
-              </p>
+                <p className="mt-1 text-xs text-white/30">
+                  Movement quantity over the last 7 days.
+                </p>
+              </div>
+
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-400/[0.07] text-amber-400">
+                <MovementIcon />
+              </div>
             </div>
 
             {!hasMovementActivity ? (
-              <div className="mt-10 flex min-h-48 items-center justify-center text-center">
-                <div>
-                  <p className="text-sm font-medium text-zinc-300">
+              <div className="mt-8 flex min-h-[230px] items-center justify-center rounded-xl border border-dashed border-white/[0.07]">
+                <div className="px-6 text-center">
+                  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.03] text-white/20">
+                    <MovementIcon />
+                  </div>
+
+                  <p className="mt-4 text-sm font-medium text-white/50">
                     No movement activity
                   </p>
 
-                  <p className="mt-1 text-xs text-zinc-500">
+                  <p className="mx-auto mt-1 max-w-xs text-xs leading-5 text-white/25">
                     No stock movements have been recorded during
                     the last 7 days.
                   </p>
                 </div>
               </div>
             ) : (
-              <div className="mt-8 flex h-56 items-end justify-between gap-3">
+              <div className="mt-7 flex h-[235px] items-end gap-2 sm:gap-3">
                 {movementTrend.map((day) => {
                   const height =
                     day.quantity > 0
@@ -557,9 +884,9 @@ export default function DashboardPage() {
                   return (
                     <div
                       key={day.date}
-                      className="flex h-full flex-1 flex-col items-center justify-end"
+                      className="group flex h-full flex-1 flex-col items-center justify-end"
                     >
-                      <div className="mb-2 text-xs font-medium text-orange-400">
+                      <div className="mb-2 h-4 text-[10px] font-medium text-amber-400 opacity-0 transition-opacity group-hover:opacity-100">
                         {day.quantity > 0
                           ? day.quantity
                           : ""}
@@ -567,7 +894,7 @@ export default function DashboardPage() {
 
                       <div className="flex h-40 w-full items-end justify-center">
                         <div
-                          className="w-full max-w-10 rounded-t-md bg-orange-500 transition-all"
+                          className="w-full max-w-10 rounded-t-lg bg-amber-400/70 transition-all duration-500 group-hover:bg-amber-300"
                           style={{
                             height: `${height}%`,
                           }}
@@ -575,7 +902,7 @@ export default function DashboardPage() {
                         />
                       </div>
 
-                      <div className="mt-3 text-xs text-zinc-500">
+                      <div className="mt-3 text-[10px] uppercase tracking-wide text-white/25">
                         {day.label}
                       </div>
                     </div>
@@ -586,54 +913,71 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        {/* Lower Information */}
-        <section className="mt-6 grid gap-6 lg:grid-cols-2">
-          {/* Low Stock Alerts */}
-          <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-6">
-            <div>
-              <h2 className="text-lg font-semibold">
-                Low Stock Alerts
-              </h2>
+        {/* ======================================================
+            ALERTS + MOVEMENTS
+        ======================================================= */}
 
-              <p className="mt-1 text-sm text-zinc-500">
-                Products requiring attention.
-              </p>
+        <section className="mt-5 grid gap-5 lg:grid-cols-2">
+          {/* Low stock */}
+          <div className="rounded-2xl border border-white/[0.07] bg-[#0d0d0d] p-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <h2 className="text-base font-semibold">
+                  Low Stock Alerts
+                </h2>
+
+                <p className="mt-1 text-xs text-white/30">
+                  Products requiring attention.
+                </p>
+              </div>
+
+              <div className="rounded-lg bg-amber-400/[0.07] px-2.5 py-1.5 text-[10px] font-medium text-amber-400">
+                {lowStockItems.length} alerts
+              </div>
             </div>
 
-            <div className="mt-6 space-y-3">
+            <div className="mt-6 space-y-2.5">
               {lowStockItems.length === 0 ? (
-                <div className="rounded-lg border border-emerald-900/40 bg-emerald-950/20 p-4">
-                  <p className="text-sm font-medium text-emerald-400">
-                    No low stock alerts
-                  </p>
+                <div className="rounded-xl border border-emerald-400/[0.08] bg-emerald-400/[0.025] p-4">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-400/[0.08] text-emerald-400">
+                      ✓
+                    </span>
 
-                  <p className="mt-1 text-xs text-zinc-500">
-                    All current stock levels are above their minimum.
-                  </p>
+                    <div>
+                      <p className="text-sm font-medium text-emerald-400/90">
+                        No low stock alerts
+                      </p>
+
+                      <p className="mt-0.5 text-xs text-white/25">
+                        Current inventory is above minimum levels.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               ) : (
                 lowStockItems.slice(0, 5).map((item) => (
                   <div
                     key={item.id}
-                    className="flex items-center justify-between rounded-lg border border-zinc-800 bg-black p-4"
+                    className="group flex items-center justify-between rounded-xl border border-white/[0.06] bg-black/40 p-4 transition-all duration-200 hover:border-amber-400/15 hover:bg-white/[0.015]"
                   >
-                    <div>
-                      <p className="text-sm font-medium text-white">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium text-white/80">
                         {item.product?.name ?? "Unknown product"}
                       </p>
 
-                      <p className="mt-1 text-xs text-zinc-500">
+                      <p className="mt-1 text-[10px] uppercase tracking-[0.12em] text-white/25">
                         {item.product?.reference ?? "No reference"}
                       </p>
                     </div>
 
-                    <div className="text-right">
-                      <p className="text-sm font-semibold text-yellow-400">
+                    <div className="ml-4 text-right">
+                      <p className="text-sm font-semibold text-amber-400">
                         {item.quantity}
                       </p>
 
-                      <p className="text-xs text-zinc-500">
-                        Current stock
+                      <p className="mt-1 text-[10px] text-white/25">
+                        Current
                       </p>
                     </div>
                   </div>
@@ -642,59 +986,81 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Recent Movements */}
-          <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-6">
-            <div>
-              <h2 className="text-lg font-semibold">
-                Recent Movements
-              </h2>
+          {/* Recent movements */}
+          <div className="rounded-2xl border border-white/[0.07] bg-[#0d0d0d] p-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <h2 className="text-base font-semibold">
+                  Recent Movements
+                </h2>
 
-              <p className="mt-1 text-sm text-zinc-500">
-                Latest inventory activity.
-              </p>
+                <p className="mt-1 text-xs text-white/30">
+                  Latest inventory activity.
+                </p>
+              </div>
+
+              <Link
+                href="/stock-movements"
+                className="text-[10px] uppercase tracking-[0.13em] text-white/25 transition-colors hover:text-white/60"
+              >
+                View all
+              </Link>
             </div>
 
-            <div className="mt-6 space-y-3">
+            <div className="mt-6 space-y-2.5">
               {recentMovements.length === 0 ? (
-                <p className="text-sm text-zinc-500">
-                  No stock movements yet.
-                </p>
+                <div className="rounded-xl border border-dashed border-white/[0.07] p-6 text-center">
+                  <p className="text-sm text-white/35">
+                    No stock movements yet.
+                  </p>
+                </div>
               ) : (
                 recentMovements.map((movement) => {
                   const type = movement.type?.toUpperCase();
 
                   let typeColor = "text-blue-400";
+                  let dotColor = "bg-blue-400";
 
                   if (type === "IN") {
                     typeColor = "text-emerald-400";
+                    dotColor = "bg-emerald-400";
                   } else if (type === "OUT") {
                     typeColor = "text-red-400";
+                    dotColor = "bg-red-400";
                   } else if (type === "TRANSFER") {
                     typeColor = "text-blue-400";
+                    dotColor = "bg-blue-400";
                   } else if (type === "CORRECTION") {
-                    typeColor = "text-yellow-400";
+                    typeColor = "text-amber-400";
+                    dotColor = "bg-amber-400";
                   }
 
                   return (
                     <div
                       key={movement.id}
-                      className="flex items-center justify-between rounded-lg border border-zinc-800 bg-black p-4"
+                      className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-black/40 p-4 transition-all duration-200 hover:border-white/[0.11] hover:bg-white/[0.015]"
                     >
-                      <div>
-                        <p
-                          className={`text-sm font-semibold ${typeColor}`}
-                        >
-                          {movement.type}
-                        </p>
+                      <div className="flex min-w-0 items-center gap-3">
+                        <span
+                          className={`h-2 w-2 shrink-0 rounded-full ${dotColor}`}
+                        />
 
-                        <p className="mt-1 text-xs text-zinc-500">
-                          {new Date(
-                            movement.createdAt
-                          ).toLocaleString()}
-                        </p>
+                        <div className="min-w-0">
+                          <p
+                            className={`text-xs font-semibold ${typeColor}`}
+                          >
+                            {movement.type}
+                          </p>
+
+                          <p className="mt-1 truncate text-[10px] text-white/25">
+                            {new Date(
+                              movement.createdAt
+                            ).toLocaleString()}
+                          </p>
+                        </div>
                       </div>
 
-                      <p className="text-sm font-semibold text-orange-400">
+                      <p className="ml-4 text-sm font-semibold text-white/70">
                         {movement.quantity}
                       </p>
                     </div>
@@ -705,30 +1071,57 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        {/* Current Stock */}
-        <section className="mt-6 rounded-xl border border-zinc-800 bg-zinc-950 p-6">
-          <div>
-            <h2 className="text-lg font-semibold">
-              Current Stock
-            </h2>
+        {/* ======================================================
+            CURRENT STOCK
+        ======================================================= */}
 
-            <p className="mt-1 text-sm text-zinc-500">
-              Current quantities for tracked products.
-            </p>
+        <section className="mt-5 overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0d0d0d]">
+          <div className="flex flex-col justify-between gap-3 border-b border-white/[0.06] px-6 py-5 sm:flex-row sm:items-center">
+            <div>
+              <h2 className="text-base font-semibold">
+                Current Stock
+              </h2>
+
+              <p className="mt-1 text-xs text-white/30">
+                Current quantities for tracked products.
+              </p>
+            </div>
+
+            <Link
+              href="/products"
+              className="group flex items-center gap-1.5 text-[10px] uppercase tracking-[0.13em] text-white/30 transition-colors hover:text-blue-400"
+            >
+              Manage products
+
+              <span className="transition-transform duration-200 group-hover:translate-x-1">
+                <ArrowIcon />
+              </span>
+            </Link>
           </div>
 
-          <div className="mt-6 overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="border-b border-zinc-800 text-xs uppercase text-zinc-500">
-                <tr>
-                  <th className="pb-3 pr-4">Product</th>
-                  <th className="pb-3 pr-4">Warehouse</th>
-                  <th className="pb-3 pr-4">Quantity</th>
-                  <th className="pb-3">Status</th>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[650px] text-left">
+              <thead className="border-b border-white/[0.05]">
+                <tr className="text-[10px] uppercase tracking-[0.13em] text-white/25">
+                  <th className="px-6 py-4 font-medium">
+                    Product
+                  </th>
+
+                  <th className="px-6 py-4 font-medium">
+                    Warehouse
+                  </th>
+
+                  <th className="px-6 py-4 font-medium">
+                    Quantity
+                  </th>
+
+                  <th className="px-6 py-4 font-medium">
+                    Status
+                  </th>
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-zinc-900">
+              <tbody className="divide-y divide-white/[0.04]">
                 {stockLevels.slice(0, 8).map((item) => {
                   const quantity = Number(item.quantity || 0);
 
@@ -738,50 +1131,53 @@ export default function DashboardPage() {
 
                   let status = "Healthy";
                   let statusClass =
-                    "border-emerald-900/60 bg-emerald-950/20 text-emerald-400";
+                    "border-emerald-400/10 bg-emerald-400/[0.04] text-emerald-400";
 
                   if (quantity === 0) {
                     status = "Out of stock";
                     statusClass =
-                      "border-red-900/60 bg-red-950/20 text-red-400";
+                      "border-red-400/10 bg-red-400/[0.04] text-red-400";
                   } else if (isLowStock) {
                     status = "Low stock";
                     statusClass =
-                      "border-yellow-900/60 bg-yellow-950/20 text-yellow-400";
+                      "border-amber-400/10 bg-amber-400/[0.04] text-amber-400";
                   }
 
                   return (
-                    <tr key={item.id}>
-                      <td className="py-4 pr-4">
-                        <p className="font-medium text-white">
+                    <tr
+                      key={item.id}
+                      className="group transition-colors hover:bg-white/[0.012]"
+                    >
+                      <td className="px-6 py-4">
+                        <p className="text-sm font-medium text-white/75 transition-colors group-hover:text-white">
                           {item.product?.name ?? "Unknown product"}
                         </p>
 
-                        <p className="mt-1 text-xs text-zinc-500">
+                        <p className="mt-1 text-[10px] uppercase tracking-[0.1em] text-white/25">
                           {item.product?.reference ?? "-"}
                         </p>
                       </td>
 
-                      <td className="py-4 pr-4 text-zinc-400">
+                      <td className="px-6 py-4 text-xs text-white/40">
                         {item.warehouse?.name ??
                           "Unknown warehouse"}
                       </td>
 
                       <td
-                        className={`py-4 pr-4 font-semibold ${
+                        className={`px-6 py-4 text-sm font-semibold ${
                           quantity === 0
                             ? "text-red-400"
                             : isLowStock
-                              ? "text-yellow-400"
+                              ? "text-amber-400"
                               : "text-emerald-400"
                         }`}
                       >
                         {quantity}
                       </td>
 
-                      <td className="py-4">
+                      <td className="px-6 py-4">
                         <span
-                          className={`rounded-full border px-2.5 py-1 text-xs ${statusClass}`}
+                          className={`inline-flex rounded-full border px-2.5 py-1 text-[10px] ${statusClass}`}
                         >
                           {status}
                         </span>
@@ -794,40 +1190,106 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        {/* Additional Modules */}
-        <section className="mt-6 grid gap-4 md:grid-cols-2">
+        {/* ======================================================
+            ADDITIONAL MODULES
+        ======================================================= */}
+
+        <section className="mt-5 grid gap-5 md:grid-cols-2">
           <Link
             href="/inventory-counts"
-            className="rounded-xl border border-zinc-800 bg-zinc-950 p-6 transition hover:border-zinc-600"
+            className="group relative overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0d0d0d] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-blue-400/20"
           >
-            <h3 className="font-semibold text-white">
-              Inventory Counts
-            </h3>
+            <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-blue-400/[0.025] blur-2xl transition-transform duration-500 group-hover:scale-150" />
 
-            <p className="mt-2 text-sm text-zinc-500">
-              Create and validate physical inventory counts.
-            </p>
+            <div className="relative flex items-start justify-between">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-400/[0.07] text-blue-400">
+                <PackageIcon />
+              </div>
 
-            <p className="mt-4 text-sm font-medium text-blue-400">
-              Open module →
-            </p>
+              <div className="text-white/20 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-400">
+                <ArrowIcon />
+              </div>
+            </div>
+
+            <div className="relative mt-5">
+              <h3 className="font-semibold">
+                Inventory Counts
+              </h3>
+
+              <p className="mt-2 max-w-md text-xs leading-5 text-white/30">
+                Create and validate physical inventory counts
+                against the quantities recorded in the system.
+              </p>
+
+              <p className="mt-4 text-[10px] font-medium uppercase tracking-[0.14em] text-blue-400/70">
+                Open module
+              </p>
+            </div>
           </Link>
 
           <Link
             href="/audit-logs"
-            className="rounded-xl border border-zinc-800 bg-zinc-950 p-6 transition hover:border-zinc-600"
+            className="group relative overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0d0d0d] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-violet-400/20"
           >
-            <h3 className="font-semibold text-white">
-              Audit Logs
-            </h3>
+            <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-violet-400/[0.025] blur-2xl transition-transform duration-500 group-hover:scale-150" />
 
-            <p className="mt-2 text-sm text-zinc-500">
-              Review tracked actions performed in the system.
-            </p>
+            <div className="relative flex items-start justify-between">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-400/[0.07] text-violet-400">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <path
+                    d="M5 4H19V20H5V4Z"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinejoin="round"
+                  />
 
-            <p className="mt-4 text-sm font-medium text-violet-400">
-              Open module →
-            </p>
+                  <path
+                    d="M8 8H16"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+
+                  <path
+                    d="M8 12H16"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+
+                  <path
+                    d="M8 16H13"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </div>
+
+              <div className="text-white/20 transition-all duration-200 group-hover:translate-x-1 group-hover:text-violet-400">
+                <ArrowIcon />
+              </div>
+            </div>
+
+            <div className="relative mt-5">
+              <h3 className="font-semibold">
+                Audit Logs
+              </h3>
+
+              <p className="mt-2 max-w-md text-xs leading-5 text-white/30">
+                Review tracked actions performed throughout the
+                inventory management system.
+              </p>
+
+              <p className="mt-4 text-[10px] font-medium uppercase tracking-[0.14em] text-violet-400/70">
+                Open module
+              </p>
+            </div>
           </Link>
         </section>
       </main>
